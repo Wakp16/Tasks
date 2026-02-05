@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="manifest" href="manifest.json">
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Minimal Tasks</title>
@@ -163,7 +161,6 @@
             padding: 2px;
             background: linear-gradient(135deg, rgba(100, 200, 255, 0.5), rgba(200, 100, 255, 0.5));
             -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
             -webkit-mask-composite: xor;
             mask-composite: exclude;
             opacity: 0;
@@ -209,33 +206,42 @@
         .project-actions {
             display: flex;
             gap: 8px;
-            opacity: 0;
+            opacity: 1;
             transition: opacity 0.3s ease;
             position: relative;
             z-index: 10;
             pointer-events: auto;
         }
 
-        .project-item:hover .project-actions {
-            opacity: 1;
+        @media (hover: hover) and (pointer: fine) {
+            .project-actions {
+                opacity: 0;
+            }
+            
+            .project-item:hover .project-actions {
+                opacity: 1;
+            }
         }
 
         .project-action-btn {
             background: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.2);
             color: #ffffff;
-            width: 36px;
-            height: 36px;
-            border-radius: 8px;
+            min-width: 44px;
+            min-height: 44px;
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: all 0.2s ease;
-            font-size: 16px;
+            font-size: 18px;
             position: relative;
             z-index: 100;
             pointer-events: auto;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .project-action-btn::before {
@@ -246,7 +252,6 @@
             padding: 2px;
             background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.1));
             -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
             -webkit-mask-composite: xor;
             mask-composite: exclude;
             opacity: 0;
@@ -295,6 +300,7 @@
             position: relative;
             overflow: hidden;
             backdrop-filter: blur(10px);
+            -webkit-tap-highlight-color: transparent;
         }
 
         .add-project-btn::before {
@@ -318,31 +324,32 @@
             padding: 2px;
             background: linear-gradient(135deg, rgba(100, 200, 255, 0.5), rgba(200, 100, 255, 0.5));
             -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
             -webkit-mask-composite: xor;
             mask-composite: exclude;
             opacity: 0;
             transition: opacity 0.3s ease;
         }
 
-        .add-project-btn:hover::before {
-            width: 300px;
-            height: 300px;
-        }
+        @media (hover: hover) and (pointer: fine) {
+            .add-project-btn:hover::before {
+                width: 300px;
+                height: 300px;
+            }
 
-        .add-project-btn:hover::after {
-            opacity: 1;
-        }
+            .add-project-btn:hover::after {
+                opacity: 1;
+            }
 
-        .add-project-btn:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: rgba(255, 255, 255, 0.3);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 32px rgba(100, 200, 255, 0.3), 0 0 60px rgba(100, 200, 255, 0.15);
+            .add-project-btn:hover {
+                background: rgba(255, 255, 255, 0.1);
+                border-color: rgba(255, 255, 255, 0.3);
+                transform: translateY(-2px);
+                box-shadow: 0 8px 32px rgba(100, 200, 255, 0.3), 0 0 60px rgba(100, 200, 255, 0.15);
+            }
         }
 
         .add-project-btn:active {
-            transform: translateY(0) scale(0.98);
+            transform: scale(0.98);
         }
 
         .add-project-btn span {
@@ -365,28 +372,34 @@
         .back-btn {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            font-size: 20px;
+            font-size: 16px;
             cursor: pointer;
-            padding: 0;
+            padding: 12px 20px;
             margin-bottom: 20px;
-            width: 40px;
-            height: 40px;
+            min-height: 44px;
             display: flex;
             align-items: center;
             justify-content: center;
+            gap: 8px;
             border-radius: 12px;
             color: #ffffff;
             transition: all 0.3s ease;
+            -webkit-tap-highlight-color: transparent;
+            font-weight: 400;
+            width: fit-content;
         }
 
-        .back-btn:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: rgba(255, 255, 255, 0.2);
-            transform: translateX(-3px);
+        @media (hover: hover) and (pointer: fine) {
+            .back-btn:hover {
+                background: rgba(255, 255, 255, 0.1);
+                border-color: rgba(255, 255, 255, 0.2);
+                transform: translateX(-3px);
+            }
         }
 
         .back-btn:active {
-            transform: translateX(0) scale(0.95);
+            transform: scale(0.95);
+            background: rgba(255, 255, 255, 0.15);
         }
 
         .project-header {
@@ -484,8 +497,10 @@
         }
 
         .task-checkbox {
-            width: 22px;
-            height: 22px;
+            min-width: 28px;
+            min-height: 28px;
+            width: 28px;
+            height: 28px;
             border: 2px solid rgba(255, 255, 255, 0.3);
             margin-right: 15px;
             cursor: pointer;
@@ -493,9 +508,10 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 6px;
+            border-radius: 8px;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .task-checkbox::before {
@@ -508,14 +524,20 @@
             transition: opacity 0.3s ease;
         }
 
-        .task-checkbox:hover {
-            border-color: rgba(255, 255, 255, 0.5);
-            transform: scale(1.1);
-            box-shadow: 0 0 15px rgba(100, 200, 255, 0.4);
+        @media (hover: hover) and (pointer: fine) {
+            .task-checkbox:hover {
+                border-color: rgba(255, 255, 255, 0.5);
+                transform: scale(1.1);
+                box-shadow: 0 0 15px rgba(100, 200, 255, 0.4);
+            }
+
+            .task-checkbox:hover::before {
+                opacity: 1;
+            }
         }
 
-        .task-checkbox:hover::before {
-            opacity: 1;
+        .task-checkbox:active {
+            transform: scale(0.95);
         }
 
         .task-checkbox.checked {
@@ -528,7 +550,7 @@
         .task-checkbox.checked::after {
             content: '✓';
             color: #000000;
-            font-size: 14px;
+            font-size: 16px;
             font-weight: bold;
         }
 
@@ -556,21 +578,30 @@
             background: rgba(255, 59, 48, 0.1);
             border: 1px solid rgba(255, 59, 48, 0.2);
             color: rgba(255, 59, 48, 0.8);
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
-            font-size: 18px;
+            min-width: 40px;
+            min-height: 40px;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            font-size: 20px;
             cursor: pointer;
-            opacity: 0;
+            opacity: 1;
             transition: all 0.3s ease;
             padding: 0;
             display: flex;
             align-items: center;
             justify-content: center;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        .task-item:hover .delete-task-btn {
-            opacity: 1;
+        @media (hover: hover) and (pointer: fine) {
+            .delete-task-btn {
+                opacity: 0;
+            }
+            
+            .task-item:hover .delete-task-btn {
+                opacity: 1;
+            }
         }
 
         .delete-task-btn:hover {
@@ -816,17 +847,6 @@
             }
         }
 
-        /* Touch device optimizations */
-        @media (hover: none) and (pointer: coarse) {
-            .project-actions {
-                opacity: 1;
-            }
-
-            .delete-task-btn {
-                opacity: 1;
-            }
-        }
-
         /* Swipe gestures */
         .task-item {
             position: relative;
@@ -888,13 +908,16 @@
 
         <!-- Tasks View (Left picture in sketch) -->
         <div id="tasks-view">
-            <button class="back-btn" id="back-btn">←</button>
+            <button class="back-btn" id="back-btn">
+                <span>←</span>
+                <span>Back</span>
+            </button>
             <div class="project-header">
                 <input type="text" class="project-name" id="project-name" placeholder="Project Name">
             </div>
             <div class="tasks-list" id="tasks-list"></div>
             <div class="add-task-container">
-                <input type="text" class="add-task-input" id="add-task-input" placeholder="Add task name">
+                <input type="text" class="add-task-input" id="add-task-input" placeholder="Add task name" enterkeyhint="done" autocomplete="off">
                 <button class="add-task-submit" id="add-task-submit">Add</button>
             </div>
         </div>
@@ -904,7 +927,7 @@
     <div class="modal" id="project-modal">
         <div class="modal-content">
             <h2>New Project</h2>
-            <input type="text" class="modal-input" id="project-modal-input" placeholder="Enter project name">
+            <input type="text" class="modal-input" id="project-modal-input" placeholder="Enter project name" enterkeyhint="done" autocomplete="off">
             <div class="modal-buttons">
                 <button class="modal-btn cancel" id="modal-cancel">Cancel</button>
                 <button class="modal-btn confirm" id="modal-confirm">Create</button>
@@ -963,6 +986,9 @@
 
         // Initialize
         renderProjects();
+        
+        // Set initial history state
+        window.history.replaceState({ view: 'projects' }, '', '');
 
         // Event listeners
         addProjectBtn.addEventListener('click', () => {
@@ -999,12 +1025,39 @@
         backBtn.addEventListener('click', () => {
             saveCurrentProject();
             showProjectsView();
+            // Go back in history if we pushed a state
+            if (window.history.state && window.history.state.view === 'tasks') {
+                window.history.back();
+            }
+        });
+
+        // Handle Android/browser back button
+        window.addEventListener('popstate', (e) => {
+            if (e.state && e.state.view === 'projects') {
+                saveCurrentProject();
+                showProjectsView();
+            } else if (!e.state) {
+                // If no state, check if we're in tasks view and go back
+                if (tasksView.classList.contains('active')) {
+                    saveCurrentProject();
+                    showProjectsView();
+                }
+            }
         });
 
         addTaskSubmit.addEventListener('click', addTask);
 
         addTaskInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
+                e.preventDefault(); // Prevent form submission
+                addTask();
+            }
+        });
+
+        // Also handle mobile virtual keyboard "Go" button
+        addTaskInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.keyCode === 13) {
+                e.preventDefault();
                 addTask();
             }
         });
@@ -1229,6 +1282,8 @@
                 projectNameInput.value = project.name;
                 renderTasks();
                 showTasksView();
+                // Push state to history for Android back button
+                window.history.pushState({ view: 'tasks', projectId: projectId }, '', '');
             }
         }
 
@@ -1277,50 +1332,70 @@
                 
                 // Add swipe gesture support
                 let startX = 0;
+                let startY = 0;
                 let currentX = 0;
+                let currentY = 0;
                 let isSwiping = false;
+                let isVerticalScroll = false;
                 
                 taskItem.addEventListener('touchstart', (e) => {
                     startX = e.touches[0].clientX;
-                    isSwiping = true;
-                    taskItem.classList.add('swiping');
+                    startY = e.touches[0].clientY;
+                    isSwiping = false;
+                    isVerticalScroll = false;
                 });
                 
                 taskItem.addEventListener('touchmove', (e) => {
+                    currentX = e.touches[0].clientX;
+                    currentY = e.touches[0].clientY;
+                    const diffX = currentX - startX;
+                    const diffY = currentY - startY;
+                    
+                    // Determine if it's a vertical scroll or horizontal swipe
+                    if (!isSwiping && !isVerticalScroll) {
+                        if (Math.abs(diffY) > Math.abs(diffX)) {
+                            // More vertical movement - allow scrolling
+                            isVerticalScroll = true;
+                            return;
+                        } else if (Math.abs(diffX) > 15) {
+                            // More horizontal movement - start swiping
+                            isSwiping = true;
+                            taskItem.classList.add('swiping');
+                        }
+                    }
+                    
                     if (!isSwiping) return;
                     
-                    currentX = e.touches[0].clientX;
-                    const diff = currentX - startX;
+                    // Prevent scrolling when swiping
+                    e.preventDefault();
+                    taskItem.style.transform = `translateX(${diffX}px)`;
                     
-                    // Only allow horizontal swipe
-                    if (Math.abs(diff) > 10) {
-                        e.preventDefault();
-                        taskItem.style.transform = `translateX(${diff}px)`;
-                        
-                        // Show visual feedback
-                        if (diff > 50) {
-                            taskItem.classList.add('swipe-right');
-                            taskItem.classList.remove('swipe-left');
-                        } else if (diff < -50) {
-                            taskItem.classList.add('swipe-left');
-                            taskItem.classList.remove('swipe-right');
-                        } else {
-                            taskItem.classList.remove('swipe-left', 'swipe-right');
-                        }
+                    // Show visual feedback (increased threshold to 80px)
+                    if (diffX > 80) {
+                        taskItem.classList.add('swipe-right');
+                        taskItem.classList.remove('swipe-left');
+                    } else if (diffX < -80) {
+                        taskItem.classList.add('swipe-left');
+                        taskItem.classList.remove('swipe-right');
+                    } else {
+                        taskItem.classList.remove('swipe-left', 'swipe-right');
                     }
                 });
                 
                 taskItem.addEventListener('touchend', () => {
+                    if (isVerticalScroll) {
+                        isVerticalScroll = false;
+                        return;
+                    }
+                    
                     if (!isSwiping) return;
                     
-                    const diff = currentX - startX;
+                    const diffX = currentX - startX;
                     
-                    // Swipe right to complete (threshold: 100px)
-                    if (diff > 100) {
+                    // Increased thresholds: Swipe right to complete (150px), swipe left to delete (150px)
+                    if (diffX > 150) {
                         toggleTask(index);
-                    }
-                    // Swipe left to delete (threshold: -100px)
-                    else if (diff < -100) {
+                    } else if (diffX < -150) {
                         deleteTask(index);
                     }
                     
@@ -1328,8 +1403,23 @@
                     taskItem.style.transform = '';
                     taskItem.classList.remove('swiping', 'swipe-left', 'swipe-right');
                     isSwiping = false;
+                    isVerticalScroll = false;
                     startX = 0;
+                    startY = 0;
                     currentX = 0;
+                    currentY = 0;
+                });
+                
+                // Cancel swipe if touch is cancelled
+                taskItem.addEventListener('touchcancel', () => {
+                    taskItem.style.transform = '';
+                    taskItem.classList.remove('swiping', 'swipe-left', 'swipe-right');
+                    isSwiping = false;
+                    isVerticalScroll = false;
+                    startX = 0;
+                    startY = 0;
+                    currentX = 0;
+                    currentY = 0;
                 });
                 
                 tasksList.appendChild(taskItem);
@@ -1381,6 +1471,13 @@
         function showProjectsView() {
             projectsView.classList.remove('hidden');
             tasksView.classList.remove('active');
+            currentProjectId = null;
+            // Push state for projects view
+            if (window.history.state && window.history.state.view === 'tasks') {
+                // Don't push if we're already going back
+                return;
+            }
+            window.history.pushState({ view: 'projects' }, '', '');
         }
 
         function showTasksView() {
@@ -1434,11 +1531,5 @@
             }
         });
     </script>
-    <script>
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("./sw.js");
-}
-</script>
-
 </body>
 </html>
