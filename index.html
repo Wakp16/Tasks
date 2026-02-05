@@ -1,0 +1,1444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="manifest" href="manifest.json">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimal Tasks</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: #000000;
+            color: #ffffff;
+            height: 100vh;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 40px 30px;
+        }
+
+        /* Projects View */
+        #projects-view {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            animation: fadeIn 0.4s ease;
+        }
+
+        #projects-view.hidden {
+            display: none;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                transform: scale(0.95);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-5px);
+            }
+        }
+
+        .header {
+            margin-bottom: 40px;
+            animation: slideUp 0.5s ease;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            font-weight: 300;
+            letter-spacing: -1px;
+            background: linear-gradient(135deg, #ffffff 0%, #888888 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .projects-list {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            padding-right: 5px;
+        }
+
+        .projects-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .projects-list::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+
+        .projects-list::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+        }
+
+        .projects-list::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .project-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 24px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 16px;
+            position: relative;
+            overflow: hidden;
+            animation: slideUp 0.5s ease backwards;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .project-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .project-item::after {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: 16px;
+            padding: 2px;
+            background: linear-gradient(135deg, rgba(100, 200, 255, 0.5), rgba(200, 100, 255, 0.5));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .project-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(100, 200, 255, 0.2), 0 0 60px rgba(100, 200, 255, 0.1);
+        }
+
+        .project-item:hover::before {
+            opacity: 1;
+        }
+
+        .project-item:hover::after {
+            opacity: 1;
+        }
+
+        .project-item:active {
+            transform: translateY(0px) scale(0.98);
+        }
+
+        .project-item:nth-child(1) { animation-delay: 0.1s; }
+        .project-item:nth-child(2) { animation-delay: 0.2s; }
+        .project-item:nth-child(3) { animation-delay: 0.3s; }
+        .project-item:nth-child(4) { animation-delay: 0.4s; }
+        .project-item:nth-child(5) { animation-delay: 0.5s; }
+
+        .project-content {
+            flex: 1;
+        }
+
+        .project-title {
+            font-size: 17px;
+            font-weight: 400;
+            color: #ffffff;
+            letter-spacing: -0.2px;
+        }
+
+        .project-actions {
+            display: flex;
+            gap: 8px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            position: relative;
+            z-index: 10;
+            pointer-events: auto;
+        }
+
+        .project-item:hover .project-actions {
+            opacity: 1;
+        }
+
+        .project-action-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            font-size: 16px;
+            position: relative;
+            z-index: 100;
+            pointer-events: auto;
+        }
+
+        .project-action-btn::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: 8px;
+            padding: 2px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.1));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .project-action-btn:hover::before {
+            opacity: 1;
+        }
+
+        .project-action-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+        }
+
+        .project-action-btn:active {
+            transform: scale(0.95);
+        }
+
+        .project-action-btn.delete:hover {
+            background: rgba(255, 59, 48, 0.2);
+            border-color: rgba(255, 59, 48, 0.4);
+            box-shadow: 0 0 20px rgba(255, 59, 48, 0.5);
+        }
+
+        .project-action-btn.delete:hover::before {
+            background: linear-gradient(135deg, rgba(255, 59, 48, 0.5), rgba(255, 59, 48, 0.2));
+        }
+
+        .project-action-btn.edit:hover {
+            box-shadow: 0 0 20px rgba(100, 200, 255, 0.4);
+        }
+
+        .add-project-btn {
+            width: 100%;
+            padding: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.05);
+            color: #ffffff;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 16px;
+            font-weight: 400;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .add-project-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .add-project-btn::after {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: 16px;
+            padding: 2px;
+            background: linear-gradient(135deg, rgba(100, 200, 255, 0.5), rgba(200, 100, 255, 0.5));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .add-project-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .add-project-btn:hover::after {
+            opacity: 1;
+        }
+
+        .add-project-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(100, 200, 255, 0.3), 0 0 60px rgba(100, 200, 255, 0.15);
+        }
+
+        .add-project-btn:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        .add-project-btn span {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Tasks View */
+        #tasks-view {
+            display: none;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        #tasks-view.active {
+            display: flex;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 20px;
+            cursor: pointer;
+            padding: 0;
+            margin-bottom: 20px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            color: #ffffff;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateX(-3px);
+        }
+
+        .back-btn:active {
+            transform: translateX(0) scale(0.95);
+        }
+
+        .project-header {
+            margin-bottom: 30px;
+        }
+
+        .project-name {
+            font-size: 28px;
+            font-weight: 300;
+            border: none;
+            outline: none;
+            width: 100%;
+            padding: 8px 0;
+            background: transparent;
+            color: #ffffff;
+            letter-spacing: -0.5px;
+        }
+
+        .project-name::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .tasks-list {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            padding-right: 5px;
+        }
+
+        .tasks-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .tasks-list::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+
+        .tasks-list::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+        }
+
+        .task-item {
+            display: flex;
+            align-items: center;
+            padding: 18px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.2s ease;
+            animation: slideUp 0.3s ease backwards;
+            position: relative;
+            touch-action: pan-y;
+        }
+
+        .task-item.swiping {
+            transition: none;
+        }
+
+        .task-item.swipe-left {
+            background: linear-gradient(90deg, transparent, rgba(255, 59, 48, 0.2));
+        }
+
+        .task-item.swipe-right {
+            background: linear-gradient(90deg, rgba(52, 199, 89, 0.2), transparent);
+        }
+
+        .task-item:hover {
+            padding-left: 8px;
+        }
+
+        .swipe-indicator {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 24px;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            pointer-events: none;
+        }
+
+        .swipe-indicator.left {
+            right: 20px;
+        }
+
+        .swipe-indicator.right {
+            left: 20px;
+        }
+
+        .task-item.swipe-left .swipe-indicator.left {
+            opacity: 1;
+        }
+
+        .task-item.swipe-right .swipe-indicator.right {
+            opacity: 1;
+        }
+
+        .task-checkbox {
+            width: 22px;
+            height: 22px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            margin-right: 15px;
+            cursor: pointer;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .task-checkbox::before {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 8px;
+            background: radial-gradient(circle, rgba(100, 200, 255, 0.4) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .task-checkbox:hover {
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(100, 200, 255, 0.4);
+        }
+
+        .task-checkbox:hover::before {
+            opacity: 1;
+        }
+
+        .task-checkbox.checked {
+            background-color: #ffffff;
+            border-color: #ffffff;
+            animation: scaleIn 0.3s ease;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.6);
+        }
+
+        .task-checkbox.checked::after {
+            content: '✓';
+            color: #000000;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .task-text {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: 16px;
+            background: transparent;
+            font-family: inherit;
+            color: #ffffff;
+            transition: all 0.3s ease;
+        }
+
+        .task-text::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .task-text.completed {
+            text-decoration: line-through;
+            opacity: 0.4;
+        }
+
+        .delete-task-btn {
+            background: rgba(255, 59, 48, 0.1);
+            border: 1px solid rgba(255, 59, 48, 0.2);
+            color: rgba(255, 59, 48, 0.8);
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+            opacity: 0;
+            transition: all 0.3s ease;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .task-item:hover .delete-task-btn {
+            opacity: 1;
+        }
+
+        .delete-task-btn:hover {
+            background: rgba(255, 59, 48, 0.2);
+            border-color: rgba(255, 59, 48, 0.4);
+            transform: scale(1.05);
+        }
+
+        .delete-task-btn:active {
+            transform: scale(0.95);
+        }
+
+        .add-task-container {
+            display: flex;
+            gap: 10px;
+        }
+
+        .add-task-input {
+            flex: 1;
+            padding: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            outline: none;
+            font-size: 16px;
+            border-radius: 12px;
+            font-family: inherit;
+            background: rgba(255, 255, 255, 0.05);
+            color: #ffffff;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .add-task-input:focus {
+            border-color: rgba(100, 200, 255, 0.6);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 20px rgba(100, 200, 255, 0.3), inset 0 0 20px rgba(100, 200, 255, 0.1);
+        }
+
+        .add-task-input::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .add-task-submit {
+            padding: 16px 24px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background-color: #ffffff;
+            color: #000000;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 12px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 500;
+        }
+
+        .add-task-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(255, 255, 255, 0.3), 0 0 40px rgba(255, 255, 255, 0.2);
+        }
+
+        .add-task-submit:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .modal.active {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background-color: #1a1a1a;
+            padding: 32px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            max-width: 400px;
+            width: 90%;
+            border-radius: 20px;
+            animation: scaleIn 0.3s ease;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content h2 {
+            font-size: 22px;
+            font-weight: 400;
+            margin-bottom: 20px;
+            color: #ffffff;
+        }
+
+        .modal-input {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            outline: none;
+            font-size: 16px;
+            margin-bottom: 24px;
+            border-radius: 12px;
+            font-family: inherit;
+            background: rgba(255, 255, 255, 0.05);
+            color: #ffffff;
+            transition: all 0.3s ease;
+        }
+
+        .modal-input:focus {
+            border-color: rgba(255, 255, 255, 0.4);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .modal-input::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .modal-btn {
+            padding: 12px 24px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            font-size: 15px;
+            border-radius: 10px;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .modal-btn.cancel {
+            background-color: rgba(255, 255, 255, 0.05);
+            color: #ffffff;
+        }
+
+        .modal-btn.cancel:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .modal-btn.confirm {
+            background-color: #ffffff;
+            color: #000000;
+        }
+
+        .modal-btn.confirm:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 255, 255, 0.3);
+        }
+
+        .modal-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: rgba(30, 30, 30, 0.95);
+            color: #ffffff;
+            padding: 16px 24px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 2000;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.1);
+            max-width: 90%;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .toast-message {
+            flex: 1;
+            font-size: 15px;
+        }
+
+        .toast-action {
+            background: rgba(100, 200, 255, 0.2);
+            border: 1px solid rgba(100, 200, 255, 0.4);
+            color: #ffffff;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .toast-action:hover {
+            background: rgba(100, 200, 255, 0.3);
+            box-shadow: 0 0 20px rgba(100, 200, 255, 0.4);
+        }
+
+        .toast-action:active {
+            transform: scale(0.95);
+        }
+
+        /* Mobile optimizations */
+        @media (max-width: 600px) {
+            .container {
+                padding: 30px 20px;
+            }
+
+            .header h1 {
+                font-size: 28px;
+            }
+
+            .project-item {
+                padding: 20px;
+            }
+
+            .add-project-btn {
+                padding: 16px;
+            }
+
+            .project-name {
+                font-size: 24px;
+            }
+
+            .toast {
+                bottom: 20px;
+                max-width: calc(100% - 40px);
+            }
+        }
+
+        /* Touch device optimizations */
+        @media (hover: none) and (pointer: coarse) {
+            .project-actions {
+                opacity: 1;
+            }
+
+            .delete-task-btn {
+                opacity: 1;
+            }
+        }
+
+        /* Swipe gestures */
+        .task-item {
+            position: relative;
+            user-select: none;
+        }
+
+        .task-item.swiping {
+            transition: none !important;
+        }
+
+        .task-item.swipe-left {
+            background: linear-gradient(90deg, transparent, rgba(255, 59, 48, 0.2));
+        }
+
+        .task-item.swipe-right {
+            background: linear-gradient(90deg, rgba(52, 199, 89, 0.2), transparent);
+        }
+
+        .swipe-indicator {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 22px;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .swipe-indicator.left {
+            left: 20px;
+            color: rgba(52, 199, 89, 0.8);
+        }
+
+        .swipe-indicator.right {
+            right: 20px;
+            color: rgba(255, 59, 48, 0.8);
+        }
+
+        .task-item.swipe-left .swipe-indicator.right {
+            opacity: 1;
+        }
+
+        .task-item.swipe-right .swipe-indicator.left {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Projects View (Right picture in sketch) -->
+        <div id="projects-view">
+            <div class="header">
+                <h1>Projects</h1>
+            </div>
+            <div class="projects-list" id="projects-list"></div>
+            <button class="add-project-btn" id="add-project-btn"><span>Add Project</span></button>
+        </div>
+
+        <!-- Tasks View (Left picture in sketch) -->
+        <div id="tasks-view">
+            <button class="back-btn" id="back-btn">←</button>
+            <div class="project-header">
+                <input type="text" class="project-name" id="project-name" placeholder="Project Name">
+            </div>
+            <div class="tasks-list" id="tasks-list"></div>
+            <div class="add-task-container">
+                <input type="text" class="add-task-input" id="add-task-input" placeholder="Add task name">
+                <button class="add-task-submit" id="add-task-submit">Add</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for new project -->
+    <div class="modal" id="project-modal">
+        <div class="modal-content">
+            <h2>New Project</h2>
+            <input type="text" class="modal-input" id="project-modal-input" placeholder="Enter project name">
+            <div class="modal-buttons">
+                <button class="modal-btn cancel" id="modal-cancel">Cancel</button>
+                <button class="modal-btn confirm" id="modal-confirm">Create</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for delete confirmation -->
+    <div class="modal" id="delete-modal">
+        <div class="modal-content">
+            <h2>Delete Project</h2>
+            <p id="delete-modal-message" style="margin-bottom: 24px; color: rgba(255, 255, 255, 0.7); line-height: 1.5;">Are you sure you want to delete this project?</p>
+            <div class="modal-buttons">
+                <button class="modal-btn cancel" id="delete-modal-cancel">Cancel</button>
+                <button class="modal-btn confirm" id="delete-modal-confirm" style="background: rgba(255, 59, 48, 0.8); border-color: rgba(255, 59, 48, 0.4);">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <div class="toast-message" id="toast-message"></div>
+        <button class="toast-action" id="toast-action">Undo</button>
+    </div>
+
+    <script>
+        // Data structure
+        let projects = JSON.parse(localStorage.getItem('projects')) || [];
+        let currentProjectId = null;
+        let editingProjectId = null;
+        let deletingProjectId = null;
+        let deletedProject = null;
+        let toastTimeout = null;
+
+        // DOM elements
+        const projectsView = document.getElementById('projects-view');
+        const tasksView = document.getElementById('tasks-view');
+        const projectsList = document.getElementById('projects-list');
+        const addProjectBtn = document.getElementById('add-project-btn');
+        const backBtn = document.getElementById('back-btn');
+        const projectNameInput = document.getElementById('project-name');
+        const tasksList = document.getElementById('tasks-list');
+        const addTaskInput = document.getElementById('add-task-input');
+        const addTaskSubmit = document.getElementById('add-task-submit');
+        const projectModal = document.getElementById('project-modal');
+        const projectModalInput = document.getElementById('project-modal-input');
+        const modalCancel = document.getElementById('modal-cancel');
+        const modalConfirm = document.getElementById('modal-confirm');
+        const deleteModal = document.getElementById('delete-modal');
+        const deleteModalMessage = document.getElementById('delete-modal-message');
+        const deleteModalCancel = document.getElementById('delete-modal-cancel');
+        const deleteModalConfirm = document.getElementById('delete-modal-confirm');
+        const toast = document.getElementById('toast');
+        const toastMessage = document.getElementById('toast-message');
+        const toastAction = document.getElementById('toast-action');
+
+        // Initialize
+        renderProjects();
+
+        // Event listeners
+        addProjectBtn.addEventListener('click', () => {
+            editingProjectId = null;
+            document.querySelector('.modal-content h2').textContent = 'New Project';
+            projectModal.classList.add('active');
+            projectModalInput.value = '';
+            projectModalInput.focus();
+        });
+
+        modalCancel.addEventListener('click', () => {
+            projectModal.classList.remove('active');
+            editingProjectId = null;
+        });
+
+        modalConfirm.addEventListener('click', () => {
+            if (editingProjectId) {
+                updateProject();
+            } else {
+                createProject();
+            }
+        });
+
+        projectModalInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                if (editingProjectId) {
+                    updateProject();
+                } else {
+                    createProject();
+                }
+            }
+        });
+
+        backBtn.addEventListener('click', () => {
+            saveCurrentProject();
+            showProjectsView();
+        });
+
+        addTaskSubmit.addEventListener('click', addTask);
+
+        addTaskInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                addTask();
+            }
+        });
+
+        projectNameInput.addEventListener('input', () => {
+            const project = projects.find(p => p.id === currentProjectId);
+            if (project) {
+                project.name = projectNameInput.value;
+                saveData();
+                renderProjects();
+            }
+        });
+
+        // Click outside modal to close
+        projectModal.addEventListener('click', (e) => {
+            if (e.target === projectModal) {
+                projectModal.classList.remove('active');
+                editingProjectId = null;
+            }
+        });
+
+        deleteModal.addEventListener('click', (e) => {
+            if (e.target === deleteModal) {
+                deleteModal.classList.remove('active');
+                deletingProjectId = null;
+            }
+        });
+
+        deleteModalCancel.addEventListener('click', () => {
+            deleteModal.classList.remove('active');
+            deletingProjectId = null;
+        });
+
+        deleteModalConfirm.addEventListener('click', () => {
+            if (deletingProjectId) {
+                // Store the deleted project for undo
+                deletedProject = projects.find(p => p.id === deletingProjectId);
+                
+                // Filter out the project
+                projects = projects.filter(function(p) {
+                    return p.id !== deletingProjectId;
+                });
+                
+                // Save to localStorage
+                localStorage.setItem('projects', JSON.stringify(projects));
+                
+                // If viewing this project, go back
+                if (currentProjectId === deletingProjectId) {
+                    currentProjectId = null;
+                    showProjectsView();
+                }
+                
+                // Re-render the list
+                renderProjects();
+                
+                // Close modal
+                deleteModal.classList.remove('active');
+                deletingProjectId = null;
+                
+                // Show toast with undo option
+                showToast('Project "' + deletedProject.name + '" deleted');
+            }
+        });
+
+        // Functions
+        function createProject() {
+            const name = projectModalInput.value.trim();
+            if (name) {
+                const project = {
+                    id: Date.now(),
+                    name: name,
+                    tasks: []
+                };
+                projects.push(project);
+                saveData();
+                renderProjects();
+                projectModal.classList.remove('active');
+            }
+        }
+
+        function updateProject() {
+            const name = projectModalInput.value.trim();
+            if (name && editingProjectId) {
+                const project = projects.find(p => p.id === editingProjectId);
+                if (project) {
+                    project.name = name;
+                    saveData();
+                    renderProjects();
+                    if (currentProjectId === editingProjectId) {
+                        projectNameInput.value = name;
+                    }
+                }
+                projectModal.classList.remove('active');
+                editingProjectId = null;
+            }
+        }
+
+        function editProject(projectId, event) {
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            editingProjectId = projectId;
+            const project = projects.find(p => p.id === projectId);
+            if (project) {
+                document.querySelector('.modal-content h2').textContent = 'Edit Project';
+                projectModalInput.value = project.name;
+                projectModal.classList.add('active');
+                projectModalInput.focus();
+                projectModalInput.select();
+            }
+        }
+
+        function deleteProject(projectId, event) {
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            const project = projects.find(p => p.id === projectId);
+            if (project) {
+                const confirmDelete = confirm(`Delete "${project.name}"?\n\nThis will permanently delete the project and all its tasks.`);
+                if (confirmDelete) {
+                    projects = projects.filter(p => p.id !== projectId);
+                    saveData();
+                    renderProjects();
+                    if (currentProjectId === projectId) {
+                        showProjectsView();
+                    }
+                }
+            }
+        }
+
+        function renderProjects() {
+            projectsList.innerHTML = '';
+            projects.forEach(project => {
+                const projectItem = document.createElement('div');
+                projectItem.className = 'project-item';
+                
+                // Create content section
+                const projectContent = document.createElement('div');
+                projectContent.className = 'project-content';
+                
+                const projectTitle = document.createElement('div');
+                projectTitle.className = 'project-title';
+                projectTitle.textContent = project.name;
+                
+                projectContent.appendChild(projectTitle);
+                
+                // Create actions section
+                const projectActions = document.createElement('div');
+                projectActions.className = 'project-actions';
+                
+                const editBtn = document.createElement('button');
+                editBtn.className = 'project-action-btn edit';
+                editBtn.title = 'Edit';
+                editBtn.innerHTML = '✎';
+                
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'project-action-btn delete';
+                deleteBtn.title = 'Delete';
+                deleteBtn.innerHTML = '×';
+                
+                // Handle edit button click
+                editBtn.onclick = function(e) {
+                    e.stopPropagation();
+                    e.stopImmediatePropagation();
+                    e.preventDefault();
+                    
+                    editingProjectId = project.id;
+                    const proj = projects.find(p => p.id === project.id);
+                    if (proj) {
+                        document.querySelector('.modal-content h2').textContent = 'Edit Project';
+                        projectModalInput.value = proj.name;
+                        projectModal.classList.add('active');
+                        projectModalInput.focus();
+                        projectModalInput.select();
+                    }
+                    return false;
+                };
+                
+                // Handle delete button click
+                deleteBtn.onclick = function(e) {
+                    e.stopPropagation();
+                    e.stopImmediatePropagation();
+                    e.preventDefault();
+                    
+                    // Set the deleting project ID
+                    deletingProjectId = project.id;
+                    
+                    // Update modal message
+                    deleteModalMessage.textContent = 'Are you sure you want to delete "' + project.name + '"? This will permanently delete the project and all its tasks.';
+                    
+                    // Show modal
+                    deleteModal.classList.add('active');
+                    
+                    return false;
+                };
+                
+                projectActions.appendChild(editBtn);
+                projectActions.appendChild(deleteBtn);
+                
+                projectItem.appendChild(projectContent);
+                projectItem.appendChild(projectActions);
+                
+                // Handle project item click to open
+                projectItem.onclick = function(e) {
+                    // Check if click is on a button
+                    if (e.target.tagName === 'BUTTON' || e.target.closest('button')) {
+                        return false;
+                    }
+                    openProject(project.id);
+                };
+                
+                projectsList.appendChild(projectItem);
+            });
+        }
+
+        function openProject(projectId) {
+            currentProjectId = projectId;
+            const project = projects.find(p => p.id === projectId);
+            if (project) {
+                projectNameInput.value = project.name;
+                renderTasks();
+                showTasksView();
+            }
+        }
+
+        function renderTasks() {
+            const project = projects.find(p => p.id === currentProjectId);
+            if (!project) return;
+
+            tasksList.innerHTML = '';
+            project.tasks.forEach((task, index) => {
+                const taskItem = document.createElement('div');
+                taskItem.className = 'task-item';
+                
+                // Add swipe indicators
+                const swipeLeftIndicator = document.createElement('div');
+                swipeLeftIndicator.className = 'swipe-indicator left';
+                swipeLeftIndicator.textContent = '✓';
+                
+                const swipeRightIndicator = document.createElement('div');
+                swipeRightIndicator.className = 'swipe-indicator right';
+                swipeRightIndicator.textContent = '✕';
+                
+                taskItem.appendChild(swipeLeftIndicator);
+                taskItem.appendChild(swipeRightIndicator);
+                
+                const checkbox = document.createElement('div');
+                checkbox.className = `task-checkbox ${task.completed ? 'checked' : ''}`;
+                checkbox.addEventListener('click', () => toggleTask(index));
+
+                const taskText = document.createElement('input');
+                taskText.type = 'text';
+                taskText.className = `task-text ${task.completed ? 'completed' : ''}`;
+                taskText.value = task.text;
+                taskText.addEventListener('input', (e) => {
+                    task.text = e.target.value;
+                    saveData();
+                });
+
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'delete-task-btn';
+                deleteBtn.innerHTML = '×';
+                deleteBtn.addEventListener('click', () => deleteTask(index));
+
+                taskItem.appendChild(checkbox);
+                taskItem.appendChild(taskText);
+                taskItem.appendChild(deleteBtn);
+                
+                // Add swipe gesture support
+                let startX = 0;
+                let currentX = 0;
+                let isSwiping = false;
+                
+                taskItem.addEventListener('touchstart', (e) => {
+                    startX = e.touches[0].clientX;
+                    isSwiping = true;
+                    taskItem.classList.add('swiping');
+                });
+                
+                taskItem.addEventListener('touchmove', (e) => {
+                    if (!isSwiping) return;
+                    
+                    currentX = e.touches[0].clientX;
+                    const diff = currentX - startX;
+                    
+                    // Only allow horizontal swipe
+                    if (Math.abs(diff) > 10) {
+                        e.preventDefault();
+                        taskItem.style.transform = `translateX(${diff}px)`;
+                        
+                        // Show visual feedback
+                        if (diff > 50) {
+                            taskItem.classList.add('swipe-right');
+                            taskItem.classList.remove('swipe-left');
+                        } else if (diff < -50) {
+                            taskItem.classList.add('swipe-left');
+                            taskItem.classList.remove('swipe-right');
+                        } else {
+                            taskItem.classList.remove('swipe-left', 'swipe-right');
+                        }
+                    }
+                });
+                
+                taskItem.addEventListener('touchend', () => {
+                    if (!isSwiping) return;
+                    
+                    const diff = currentX - startX;
+                    
+                    // Swipe right to complete (threshold: 100px)
+                    if (diff > 100) {
+                        toggleTask(index);
+                    }
+                    // Swipe left to delete (threshold: -100px)
+                    else if (diff < -100) {
+                        deleteTask(index);
+                    }
+                    
+                    // Reset
+                    taskItem.style.transform = '';
+                    taskItem.classList.remove('swiping', 'swipe-left', 'swipe-right');
+                    isSwiping = false;
+                    startX = 0;
+                    currentX = 0;
+                });
+                
+                tasksList.appendChild(taskItem);
+            });
+        }
+
+        function addTask() {
+            const text = addTaskInput.value.trim();
+            if (text) {
+                const project = projects.find(p => p.id === currentProjectId);
+                if (project) {
+                    project.tasks.push({
+                        text: text,
+                        completed: false
+                    });
+                    saveData();
+                    renderTasks();
+                    addTaskInput.value = '';
+                }
+            }
+        }
+
+        function toggleTask(index) {
+            const project = projects.find(p => p.id === currentProjectId);
+            if (project) {
+                project.tasks[index].completed = !project.tasks[index].completed;
+                saveData();
+                renderTasks();
+            }
+        }
+
+        function deleteTask(index) {
+            const project = projects.find(p => p.id === currentProjectId);
+            if (project) {
+                project.tasks.splice(index, 1);
+                saveData();
+                renderTasks();
+            }
+        }
+
+        function saveCurrentProject() {
+            const project = projects.find(p => p.id === currentProjectId);
+            if (project) {
+                project.name = projectNameInput.value;
+                saveData();
+            }
+        }
+
+        function showProjectsView() {
+            projectsView.classList.remove('hidden');
+            tasksView.classList.remove('active');
+        }
+
+        function showTasksView() {
+            projectsView.classList.add('hidden');
+            tasksView.classList.add('active');
+            addTaskInput.focus();
+        }
+
+        function saveData() {
+            localStorage.setItem('projects', JSON.stringify(projects));
+        }
+
+        // Toast notification functions
+        function showToast(message) {
+            toastMessage.textContent = message;
+            toast.classList.add('show');
+            
+            // Clear any existing timeout
+            if (toastTimeout) {
+                clearTimeout(toastTimeout);
+            }
+            
+            // Auto-hide after 5 seconds
+            toastTimeout = setTimeout(() => {
+                hideToast();
+            }, 5000);
+        }
+
+        function hideToast() {
+            toast.classList.remove('show');
+            if (toastTimeout) {
+                clearTimeout(toastTimeout);
+                toastTimeout = null;
+            }
+            // Clear deleted project after animation completes
+            setTimeout(() => {
+                deletedProject = null;
+            }, 300);
+        }
+
+        // Undo delete handler
+        toastAction.addEventListener('click', () => {
+            if (deletedProject) {
+                // Restore the project
+                projects.push(deletedProject);
+                saveData();
+                renderProjects();
+                
+                // Hide toast immediately
+                hideToast();
+            }
+        });
+    </script>
+    <script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("./sw.js");
+}
+</script>
+
+</body>
+</html>
