@@ -635,8 +635,6 @@
             font-weight: 400;
             white-space: nowrap;
             -webkit-tap-highlight-color: transparent;
-            margin-bottom: 15px;
-            align-self: flex-start;
         }
 
         @media (hover: hover) and (pointer: fine) {
@@ -947,7 +945,10 @@
             <div class="project-header">
                 <input type="text" class="project-name" id="project-name" placeholder="Project Name">
             </div>
-            <button class="clear-all-btn" id="clear-all-btn">Clear</button>
+            <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                <button class="clear-all-btn" id="clear-all-btn">Clear</button>
+                <button class="clear-all-btn" id="copy-all-btn">Copy All</button>
+            </div>
             <div class="tasks-list" id="tasks-list"></div>
             <div class="add-task-container">
                 <input type="text" class="add-task-input" id="add-task-input" placeholder="Add task name" enterkeyhint="done" autocomplete="off">
@@ -1004,6 +1005,7 @@
         const projectNameInput = document.getElementById('project-name');
         const tasksList = document.getElementById('tasks-list');
         const clearAllBtn = document.getElementById('clear-all-btn');
+        const copyAllBtn = document.getElementById('copy-all-btn');
         const addTaskInput = document.getElementById('add-task-input');
         const addTaskSubmit = document.getElementById('add-task-submit');
         const projectModal = document.getElementById('project-modal');
@@ -1098,6 +1100,51 @@
             }
         });
 
+        copyAllBtn.addEventListener('click', async () => {
+            const project = projects.find(p => p.id === currentProjectId);
+            if (project && project.tasks.length > 0) {
+                // Create a text list of all tasks
+                const taskList = project.tasks.map((task, index) => {
+                    const checkbox = task.completed ? '[x]' : '[ ]';
+                    return `${checkbox} ${task.text}`;
+                }).join('\n');
+                
+                // Use fallback method (more reliable across browsers)
+                const textArea = document.createElement('textarea');
+                textArea.value = taskList;
+                textArea.style.position = 'fixed';
+                textArea.style.top = '0';
+                textArea.style.left = '0';
+                textArea.style.width = '2em';
+                textArea.style.height = '2em';
+                textArea.style.padding = '0';
+                textArea.style.border = 'none';
+                textArea.style.outline = 'none';
+                textArea.style.boxShadow = 'none';
+                textArea.style.background = 'transparent';
+                textArea.style.opacity = '0';
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                
+                try {
+                    const successful = document.execCommand('copy');
+                    if (successful) {
+                        showToast(`Copied ${project.tasks.length} tasks`);
+                    } else {
+                        showToast('Copy failed - please try again');
+                    }
+                } catch (err) {
+                    console.error('Copy error:', err);
+                    showToast('Copy failed - please try again');
+                } finally {
+                    document.body.removeChild(textArea);
+                }
+            } else {
+                showToast('No tasks to copy');
+            }
+        });
+
         addTaskInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 e.preventDefault(); // Prevent form submission
@@ -1110,6 +1157,46 @@
             if (e.key === 'Enter' || e.keyCode === 13) {
                 e.preventDefault();
                 addTask();
+            }
+        });
+
+        // Smart paste - detect when user pastes multiple lines and create multiple tasks
+        addTaskInput.addEventListener('paste', (e) => {
+            e.preventDefault();
+            const pastedText = (e.clipboardData || window.clipboardData).getData('text');
+            
+            // Split by newlines
+            const lines = pastedText.split('\n').map(line => line.trim()).filter(line => line.length > 0);
+            
+            if (lines.length > 1) {
+                // Multiple lines - create multiple tasks
+                const project = projects.find(p => p.id === currentProjectId);
+                if (project) {
+                    lines.forEach(line => {
+                        // Remove common prefixes like "- ", "* ", "• ", numbers, checkboxes
+                        const cleanedLine = line
+                            .replace(/^[-*•]\s+/, '')  // Remove bullet points
+                            .replace(/^\d+[\.\)]\s+/, '')  // Remove numbered lists
+                            .replace(/^[\[\(]?\s*[xX✓✔]\s*[\]\)]?\s+/, '')  // Remove checkboxes
+                            .trim();
+                        
+                        if (cleanedLine) {
+                            project.tasks.push({
+                                text: cleanedLine,
+                                completed: false
+                            });
+                        }
+                    });
+                    saveData();
+                    renderTasks();
+                    addTaskInput.value = '';
+                    
+                    // Show toast notification
+                    showToast(`Added ${lines.length} tasks`);
+                }
+            } else if (lines.length === 1) {
+                // Single line - just insert it into the input
+                addTaskInput.value = lines[0];
             }
         });
 
