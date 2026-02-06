@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
     <link rel="manifest" href="manifest.json">
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Minimal Tasks</title>
@@ -624,6 +623,34 @@
             gap: 10px;
         }
 
+        .clear-all-btn {
+            padding: 12px 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.05);
+            color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+            font-size: 14px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            font-weight: 400;
+            white-space: nowrap;
+            -webkit-tap-highlight-color: transparent;
+            margin-bottom: 15px;
+            align-self: flex-start;
+        }
+
+        @media (hover: hover) and (pointer: fine) {
+            .clear-all-btn:hover {
+                background: rgba(255, 255, 255, 0.1);
+                border-color: rgba(255, 255, 255, 0.3);
+                color: rgba(255, 255, 255, 0.9);
+            }
+        }
+
+        .clear-all-btn:active {
+            transform: scale(0.98);
+        }
+
         .add-task-input {
             flex: 1;
             padding: 16px;
@@ -920,6 +947,7 @@
             <div class="project-header">
                 <input type="text" class="project-name" id="project-name" placeholder="Project Name">
             </div>
+            <button class="clear-all-btn" id="clear-all-btn">Clear</button>
             <div class="tasks-list" id="tasks-list"></div>
             <div class="add-task-container">
                 <input type="text" class="add-task-input" id="add-task-input" placeholder="Add task name" enterkeyhint="done" autocomplete="off">
@@ -975,6 +1003,7 @@
         const backBtn = document.getElementById('back-btn');
         const projectNameInput = document.getElementById('project-name');
         const tasksList = document.getElementById('tasks-list');
+        const clearAllBtn = document.getElementById('clear-all-btn');
         const addTaskInput = document.getElementById('add-task-input');
         const addTaskSubmit = document.getElementById('add-task-submit');
         const projectModal = document.getElementById('project-modal');
@@ -1051,6 +1080,23 @@
         });
 
         addTaskSubmit.addEventListener('click', addTask);
+
+        clearAllBtn.addEventListener('click', () => {
+            const project = projects.find(p => p.id === currentProjectId);
+            if (project && project.tasks.length > 0) {
+                // Check if there are any completed tasks
+                const hasCompletedTasks = project.tasks.some(task => task.completed);
+                
+                if (hasCompletedTasks) {
+                    // Uncheck all tasks
+                    project.tasks.forEach(task => {
+                        task.completed = false;
+                    });
+                    saveData();
+                    renderTasks();
+                }
+            }
+        });
 
         addTaskInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
@@ -1488,7 +1534,7 @@
         function showTasksView() {
             projectsView.classList.add('hidden');
             tasksView.classList.add('active');
-            addTaskInput.focus();
+            // Don't auto-focus to prevent keyboard popup on mobile
         }
 
         function saveData() {
@@ -1541,6 +1587,5 @@ if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("./sw.js");
 }
 </script>
-
 </body>
 </html>
