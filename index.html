@@ -4,8 +4,22 @@
     <link rel="manifest" href="manifest.json">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Minimal Tasks</title>
+    <title>Tasks</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=Sora:wght@400;600;700&display=swap');
+
+        :root {
+            --bg: #050607;
+            --panel: rgba(10, 12, 14, 0.85);
+            --panel-border: rgba(255, 255, 255, 0.12);
+            --text: #f7f7f5;
+            --muted: rgba(247, 247, 245, 0.6);
+            --neon-cyan: #35f0ff;
+            --neon-lime: #b6ff3b;
+            --neon-amber: #ffb347;
+            --shadow-neon: 0 0 24px rgba(53, 240, 255, 0.35);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -13,13 +27,37 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background-color: #000000;
-            color: #ffffff;
+            font-family: 'Space Grotesk', system-ui, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
             height: 100vh;
             overflow: hidden;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(1200px 600px at 20% -10%, rgba(53, 240, 255, 0.18), transparent 60%),
+                radial-gradient(1000px 800px at 110% 0%, rgba(182, 255, 59, 0.12), transparent 55%),
+                repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.03) 0px, rgba(255, 255, 255, 0.03) 1px, transparent 1px, transparent 24px),
+                repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.03) 0px, rgba(255, 255, 255, 0.03) 1px, transparent 1px, transparent 24px);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(400px 200px at 50% 0%, rgba(255, 179, 71, 0.12), transparent 60%);
+            pointer-events: none;
+            z-index: 0;
+            mix-blend-mode: screen;
         }
 
         .container {
@@ -29,6 +67,8 @@
             display: flex;
             flex-direction: column;
             padding: 40px 30px;
+            position: relative;
+            z-index: 1;
         }
 
         /* Projects View */
@@ -91,10 +131,12 @@
         }
 
         .header h1 {
+            font-family: 'Sora', system-ui, sans-serif;
             font-size: 32px;
-            font-weight: 300;
-            letter-spacing: -1px;
-            background: linear-gradient(135deg, #ffffff 0%, #888888 100%);
+            font-weight: 700;
+            letter-spacing: -0.8px;
+            text-transform: uppercase;
+            background: linear-gradient(135deg, var(--text) 0%, var(--neon-cyan) 60%, var(--neon-lime) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -126,8 +168,8 @@
         }
 
         .project-item {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: var(--panel);
+            border: 1px solid var(--panel-border);
             padding: 24px;
             margin-bottom: 15px;
             cursor: pointer;
@@ -140,6 +182,7 @@
             justify-content: space-between;
             align-items: center;
             backdrop-filter: blur(10px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
         }
 
         .project-item::before {
@@ -160,7 +203,7 @@
             inset: -2px;
             border-radius: 16px;
             padding: 2px;
-            background: linear-gradient(135deg, rgba(100, 200, 255, 0.5), rgba(200, 100, 255, 0.5));
+            background: linear-gradient(135deg, rgba(53, 240, 255, 0.6), rgba(182, 255, 59, 0.6));
             -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
             mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
             -webkit-mask-composite: xor;
@@ -170,10 +213,10 @@
         }
 
         .project-item:hover {
-            background: rgba(255, 255, 255, 0.08);
-            border-color: rgba(255, 255, 255, 0.2);
+            background: rgba(10, 12, 14, 0.95);
+            border-color: rgba(53, 240, 255, 0.45);
             transform: translateY(-2px);
-            box-shadow: 0 8px 32px rgba(100, 200, 255, 0.2), 0 0 60px rgba(100, 200, 255, 0.1);
+            box-shadow: 0 12px 40px rgba(53, 240, 255, 0.25), 0 0 60px rgba(182, 255, 59, 0.12);
         }
 
         .project-item:hover::before {
@@ -200,9 +243,10 @@
 
         .project-title {
             font-size: 17px;
-            font-weight: 400;
-            color: #ffffff;
-            letter-spacing: -0.2px;
+            font-weight: 600;
+            color: var(--text);
+            letter-spacing: -0.1px;
+            text-transform: uppercase;
         }
 
         .project-actions {
@@ -226,9 +270,9 @@
         }
 
         .project-action-btn {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: #ffffff;
+            background: rgba(53, 240, 255, 0.08);
+            border: 1px solid rgba(53, 240, 255, 0.35);
+            color: var(--text);
             min-width: 44px;
             min-height: 44px;
             width: 44px;
@@ -252,7 +296,7 @@
             inset: -2px;
             border-radius: 8px;
             padding: 2px;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.1));
+            background: linear-gradient(135deg, rgba(53, 240, 255, 0.5), rgba(182, 255, 59, 0.3));
             -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
             mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
             -webkit-mask-composite: xor;
@@ -266,9 +310,9 @@
         }
 
         .project-action-btn:hover {
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(53, 240, 255, 0.2);
             transform: scale(1.05);
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+            box-shadow: var(--shadow-neon);
         }
 
         .project-action-btn:active {
@@ -286,20 +330,20 @@
         }
 
         .project-action-btn.edit:hover {
-            box-shadow: 0 0 20px rgba(100, 200, 255, 0.4);
+            box-shadow: 0 0 20px rgba(53, 240, 255, 0.45);
         }
 
         .add-project-btn {
             width: 100%;
             padding: 18px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            background: rgba(255, 255, 255, 0.05);
-            color: #ffffff;
+            border: 1px solid rgba(182, 255, 59, 0.45);
+            background: rgba(10, 12, 14, 0.9);
+            color: var(--text);
             font-size: 16px;
             cursor: pointer;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             border-radius: 16px;
-            font-weight: 400;
+            font-weight: 600;
             position: relative;
             overflow: hidden;
             backdrop-filter: blur(10px);
@@ -325,7 +369,7 @@
             inset: -2px;
             border-radius: 16px;
             padding: 2px;
-            background: linear-gradient(135deg, rgba(100, 200, 255, 0.5), rgba(200, 100, 255, 0.5));
+            background: linear-gradient(135deg, rgba(182, 255, 59, 0.7), rgba(53, 240, 255, 0.6));
             -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
             mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
             -webkit-mask-composite: xor;
@@ -345,10 +389,10 @@
             }
 
             .add-project-btn:hover {
-                background: rgba(255, 255, 255, 0.1);
-                border-color: rgba(255, 255, 255, 0.3);
+                background: rgba(10, 12, 14, 0.95);
+                border-color: rgba(182, 255, 59, 0.7);
                 transform: translateY(-2px);
-                box-shadow: 0 8px 32px rgba(100, 200, 255, 0.3), 0 0 60px rgba(100, 200, 255, 0.15);
+                box-shadow: 0 10px 30px rgba(182, 255, 59, 0.25), 0 0 60px rgba(53, 240, 255, 0.2);
             }
         }
 
@@ -374,8 +418,8 @@
         }
 
         .back-btn {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: var(--panel);
+            border: 1px solid var(--panel-border);
             font-size: 16px;
             cursor: pointer;
             padding: 12px 20px;
@@ -386,17 +430,17 @@
             justify-content: center;
             gap: 8px;
             border-radius: 12px;
-            color: #ffffff;
+            color: var(--text);
             transition: all 0.3s ease;
             -webkit-tap-highlight-color: transparent;
-            font-weight: 400;
+            font-weight: 600;
             width: fit-content;
         }
 
         @media (hover: hover) and (pointer: fine) {
             .back-btn:hover {
-                background: rgba(255, 255, 255, 0.1);
-                border-color: rgba(255, 255, 255, 0.2);
+                background: rgba(10, 12, 14, 0.95);
+                border-color: rgba(53, 240, 255, 0.45);
                 transform: translateX(-3px);
             }
         }
@@ -412,14 +456,16 @@
 
         .project-name {
             font-size: 28px;
-            font-weight: 300;
+            font-weight: 700;
             border: none;
             outline: none;
             width: 100%;
             padding: 8px 0;
             background: transparent;
-            color: #ffffff;
-            letter-spacing: -0.5px;
+            color: var(--text);
+            letter-spacing: -0.4px;
+            text-transform: uppercase;
+            font-family: 'Sora', system-ui, sans-serif;
         }
 
         .project-name::placeholder {
@@ -452,7 +498,7 @@
             align-items: center;
             padding: 18px 0;
             border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            transition: all 0.2s ease;
+            transition: transform 160ms ease, padding-left 0.2s ease, opacity 0.2s ease;
             animation: slideUp 0.3s ease backwards;
             position: relative;
             touch-action: pan-y;
@@ -460,6 +506,32 @@
 
         .task-item.swiping {
             transition: none;
+        }
+
+        .tasks-list.dragging {
+            cursor: grabbing;
+        }
+
+        .tasks-list.dragging .task-item:hover {
+            padding-left: 0;
+        }
+
+        .task-item.dragging {
+            z-index: 5;
+            opacity: 0.7;
+            transform: scale(1.02);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+            background: rgba(10, 12, 14, 0.95);
+            transition: none;
+            pointer-events: none;
+            border-bottom-color: rgba(53, 240, 255, 0.35);
+        }
+
+        .task-item.drag-placeholder {
+            border: 1px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            margin: 6px 0;
+            transition: height 120ms ease, margin 120ms ease;
         }
 
         .task-item.swipe-left {
@@ -505,7 +577,7 @@
             min-height: 28px;
             width: 28px;
             height: 28px;
-            border: 2px solid rgba(255, 255, 255, 0.3);
+            border: 2px solid rgba(53, 240, 255, 0.35);
             margin-right: 15px;
             cursor: pointer;
             flex-shrink: 0;
@@ -523,16 +595,16 @@
             position: absolute;
             inset: -4px;
             border-radius: 8px;
-            background: radial-gradient(circle, rgba(100, 200, 255, 0.4) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(53, 240, 255, 0.5) 0%, transparent 70%);
             opacity: 0;
             transition: opacity 0.3s ease;
         }
 
         @media (hover: hover) and (pointer: fine) {
             .task-checkbox:hover {
-                border-color: rgba(255, 255, 255, 0.5);
+                border-color: rgba(53, 240, 255, 0.7);
                 transform: scale(1.1);
-                box-shadow: 0 0 15px rgba(100, 200, 255, 0.4);
+                box-shadow: 0 0 15px rgba(53, 240, 255, 0.5);
             }
 
             .task-checkbox:hover::before {
@@ -545,17 +617,18 @@
         }
 
         .task-checkbox.checked {
-            background-color: #ffffff;
-            border-color: #ffffff;
+            background-color: var(--neon-lime);
+            border-color: var(--neon-lime);
             animation: scaleIn 0.3s ease;
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.6);
+            box-shadow: 0 0 20px rgba(182, 255, 59, 0.6);
         }
 
         .task-checkbox.checked::after {
-            content: '✓';
-            color: #000000;
+            content: '\2713';
+            color: #0a0c0e;
             font-size: 16px;
             font-weight: bold;
+            font-family: 'Sora', system-ui, sans-serif;
         }
 
         .task-text {
@@ -565,7 +638,7 @@
             font-size: 16px;
             background: transparent;
             font-family: inherit;
-            color: #ffffff;
+            color: var(--text);
             transition: all 0.3s ease;
         }
 
@@ -579,9 +652,9 @@
         }
 
         .delete-task-btn {
-            background: rgba(255, 59, 48, 0.1);
-            border: 1px solid rgba(255, 59, 48, 0.2);
-            color: rgba(255, 59, 48, 0.8);
+            background: rgba(255, 59, 48, 0.12);
+            border: 1px solid rgba(255, 59, 48, 0.35);
+            color: rgba(255, 59, 48, 0.9);
             min-width: 40px;
             min-height: 40px;
             width: 40px;
@@ -626,22 +699,22 @@
         .clear-all-btn {
             padding: 12px 20px;
             border: 1px solid rgba(255, 255, 255, 0.2);
-            background: rgba(255, 255, 255, 0.05);
-            color: rgba(255, 255, 255, 0.7);
+            background: rgba(10, 12, 14, 0.85);
+            color: var(--muted);
             cursor: pointer;
             font-size: 14px;
             border-radius: 12px;
             transition: all 0.3s ease;
-            font-weight: 400;
+            font-weight: 600;
             white-space: nowrap;
             -webkit-tap-highlight-color: transparent;
         }
 
         @media (hover: hover) and (pointer: fine) {
             .clear-all-btn:hover {
-                background: rgba(255, 255, 255, 0.1);
-                border-color: rgba(255, 255, 255, 0.3);
-                color: rgba(255, 255, 255, 0.9);
+                background: rgba(10, 12, 14, 0.95);
+                border-color: rgba(182, 255, 59, 0.5);
+                color: var(--text);
             }
         }
 
@@ -652,21 +725,21 @@
         .add-task-input {
             flex: 1;
             padding: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(53, 240, 255, 0.35);
             outline: none;
             font-size: 16px;
             border-radius: 12px;
             font-family: inherit;
-            background: rgba(255, 255, 255, 0.05);
-            color: #ffffff;
+            background: rgba(10, 12, 14, 0.85);
+            color: var(--text);
             transition: all 0.3s ease;
             backdrop-filter: blur(10px);
         }
 
         .add-task-input:focus {
-            border-color: rgba(100, 200, 255, 0.6);
-            background: rgba(255, 255, 255, 0.08);
-            box-shadow: 0 0 20px rgba(100, 200, 255, 0.3), inset 0 0 20px rgba(100, 200, 255, 0.1);
+            border-color: rgba(53, 240, 255, 0.7);
+            background: rgba(10, 12, 14, 0.95);
+            box-shadow: 0 0 20px rgba(53, 240, 255, 0.3), inset 0 0 20px rgba(53, 240, 255, 0.12);
         }
 
         .add-task-input::placeholder {
@@ -675,19 +748,19 @@
 
         .add-task-submit {
             padding: 16px 24px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            background-color: #ffffff;
-            color: #000000;
+            border: 1px solid rgba(53, 240, 255, 0.45);
+            background: rgba(53, 240, 255, 0.14);
+            color: var(--text);
             cursor: pointer;
             font-size: 16px;
             border-radius: 12px;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            font-weight: 500;
+            font-weight: 600;
         }
 
         .add-task-submit:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(255, 255, 255, 0.3), 0 0 40px rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 24px rgba(53, 240, 255, 0.25), 0 0 40px rgba(182, 255, 59, 0.18);
         }
 
         .add-task-submit:active {
@@ -930,10 +1003,10 @@
         <!-- Projects View (Right picture in sketch) -->
         <div id="projects-view">
             <div class="header">
-                <h1>Projects</h1>
+                <h1>Tasks</h1>
             </div>
             <div class="projects-list" id="projects-list"></div>
-            <button class="add-project-btn" id="add-project-btn"><span>Add Project</span></button>
+            <button class="add-project-btn" id="add-project-btn"><span>Add Tasks</span></button>
         </div>
 
         <!-- Tasks View (Left picture in sketch) -->
@@ -948,6 +1021,8 @@
             <div style="display: flex; gap: 10px; margin-bottom: 15px;">
                 <button class="clear-all-btn" id="clear-all-btn">Clear</button>
                 <button class="clear-all-btn" id="copy-all-btn">Copy All</button>
+                <button class="clear-all-btn" id="paste-all-btn">Paste</button>
+                <button class="clear-all-btn" id="delete-all-btn" style="border-color: rgba(255, 59, 48, 0.45); color: rgba(255, 59, 48, 0.9);">Delete All</button>
             </div>
             <div class="tasks-list" id="tasks-list"></div>
             <div class="add-task-container">
@@ -981,6 +1056,18 @@
         </div>
     </div>
 
+    <!-- Modal for delete all tasks confirmation -->
+    <div class="modal" id="delete-all-modal">
+        <div class="modal-content">
+            <h2>Delete All Tasks</h2>
+            <p id="delete-all-modal-message" style="margin-bottom: 24px; color: rgba(255, 255, 255, 0.7); line-height: 1.5;">Are you sure you want to delete all tasks?</p>
+            <div class="modal-buttons">
+                <button class="modal-btn cancel" id="delete-all-modal-cancel">Cancel</button>
+                <button class="modal-btn confirm" id="delete-all-modal-confirm" style="background: rgba(255, 59, 48, 0.8); border-color: rgba(255, 59, 48, 0.4);">Delete</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Toast Notification -->
     <div class="toast" id="toast">
         <div class="toast-message" id="toast-message"></div>
@@ -995,6 +1082,20 @@
         let deletingProjectId = null;
         let deletedProject = null;
         let toastTimeout = null;
+        let dragState = {
+            active: false,
+            pending: false,
+            startIndex: null,
+            currentIndex: null,
+            longPressTimer: null,
+            dragEl: null,
+            placeholder: null,
+            startY: 0,
+            pointerId: null,
+            lastX: 0,
+            lastY: 0,
+            rafId: null
+        };
 
         // DOM elements
         const projectsView = document.getElementById('projects-view');
@@ -1006,6 +1107,8 @@
         const tasksList = document.getElementById('tasks-list');
         const clearAllBtn = document.getElementById('clear-all-btn');
         const copyAllBtn = document.getElementById('copy-all-btn');
+        const pasteAllBtn = document.getElementById('paste-all-btn');
+        const deleteAllBtn = document.getElementById('delete-all-btn');
         const addTaskInput = document.getElementById('add-task-input');
         const addTaskSubmit = document.getElementById('add-task-submit');
         const projectModal = document.getElementById('project-modal');
@@ -1016,6 +1119,10 @@
         const deleteModalMessage = document.getElementById('delete-modal-message');
         const deleteModalCancel = document.getElementById('delete-modal-cancel');
         const deleteModalConfirm = document.getElementById('delete-modal-confirm');
+        const deleteAllModal = document.getElementById('delete-all-modal');
+        const deleteAllModalMessage = document.getElementById('delete-all-modal-message');
+        const deleteAllModalCancel = document.getElementById('delete-all-modal-cancel');
+        const deleteAllModalConfirm = document.getElementById('delete-all-modal-confirm');
         const toast = document.getElementById('toast');
         const toastMessage = document.getElementById('toast-message');
         const toastAction = document.getElementById('toast-action');
@@ -1100,6 +1207,17 @@
             }
         });
 
+        deleteAllBtn.addEventListener('click', () => {
+            const project = projects.find(p => p.id === currentProjectId);
+            if (!project || project.tasks.length === 0) {
+                showToast('No tasks to delete');
+                return;
+            }
+
+            deleteAllModalMessage.textContent = `Delete all ${project.tasks.length} tasks? This cannot be undone.`;
+            deleteAllModal.classList.add('active');
+        });
+
         copyAllBtn.addEventListener('click', async () => {
             const project = projects.find(p => p.id === currentProjectId);
             if (project && project.tasks.length > 0) {
@@ -1145,6 +1263,25 @@
             }
         });
 
+        pasteAllBtn.addEventListener('click', async () => {
+            if (!navigator.clipboard || !navigator.clipboard.readText) {
+                showToast('Clipboard access not available');
+                return;
+            }
+
+            try {
+                const text = await navigator.clipboard.readText();
+                if (!text || !text.trim()) {
+                    showToast('Clipboard is empty');
+                    return;
+                }
+                addTasksFromText(text);
+            } catch (err) {
+                console.error('Paste error:', err);
+                showToast('Paste failed - please try again');
+            }
+        });
+
         addTaskInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 e.preventDefault(); // Prevent form submission
@@ -1164,22 +1301,30 @@
         addTaskInput.addEventListener('paste', (e) => {
             e.preventDefault();
             const pastedText = (e.clipboardData || window.clipboardData).getData('text');
-            
-            // Split by newlines
-            const lines = pastedText.split('\n').map(line => line.trim()).filter(line => line.length > 0);
-            
+            addTasksFromText(pastedText);
+        });
+
+        function addTasksFromText(text) {
+            if (!text) {
+                showToast('Clipboard is empty');
+                return;
+            }
+
+            const lines = text
+                .split('\n')
+                .map(line => line.trim())
+                .filter(line => line.length > 0);
+
             if (lines.length > 1) {
-                // Multiple lines - create multiple tasks
                 const project = projects.find(p => p.id === currentProjectId);
                 if (project) {
                     lines.forEach(line => {
-                        // Remove common prefixes like "- ", "* ", "• ", numbers, checkboxes
                         const cleanedLine = line
-                            .replace(/^[-*•]\s+/, '')  // Remove bullet points
-                            .replace(/^\d+[\.\)]\s+/, '')  // Remove numbered lists
-                            .replace(/^[\[\(]?\s*[xX✓✔]\s*[\]\)]?\s+/, '')  // Remove checkboxes
+                            .replace(/^[-*\u2022]\s+/, '')
+                            .replace(/^\d+[\.\)]\s+/, '')
+                            .replace(/^[\[\(]?\s*[xX\u2713\u2714]\s*[\]\)]?\s+/, '')
                             .trim();
-                        
+
                         if (cleanedLine) {
                             project.tasks.push({
                                 text: cleanedLine,
@@ -1190,15 +1335,13 @@
                     saveData();
                     renderTasks();
                     addTaskInput.value = '';
-                    
-                    // Show toast notification
                     showToast(`Added ${lines.length} tasks`);
                 }
             } else if (lines.length === 1) {
-                // Single line - just insert it into the input
                 addTaskInput.value = lines[0];
             }
-        });
+        }
+
 
         projectNameInput.addEventListener('input', () => {
             const project = projects.find(p => p.id === currentProjectId);
@@ -1224,9 +1367,19 @@
             }
         });
 
+        deleteAllModal.addEventListener('click', (e) => {
+            if (e.target === deleteAllModal) {
+                deleteAllModal.classList.remove('active');
+            }
+        });
+
         deleteModalCancel.addEventListener('click', () => {
             deleteModal.classList.remove('active');
             deletingProjectId = null;
+        });
+
+        deleteAllModalCancel.addEventListener('click', () => {
+            deleteAllModal.classList.remove('active');
         });
 
         deleteModalConfirm.addEventListener('click', () => {
@@ -1258,6 +1411,17 @@
                 // Show toast with undo option
                 showToast('Project "' + deletedProject.name + '" deleted');
             }
+        });
+
+        deleteAllModalConfirm.addEventListener('click', () => {
+            const project = projects.find(p => p.id === currentProjectId);
+            if (project) {
+                project.tasks = [];
+                saveData();
+                renderTasks();
+                showToast('All tasks deleted');
+            }
+            deleteAllModal.classList.remove('active');
         });
 
         // Functions
@@ -1467,6 +1631,189 @@
                 taskItem.appendChild(checkbox);
                 taskItem.appendChild(taskText);
                 taskItem.appendChild(deleteBtn);
+
+                // Long-press drag to reorder
+                let pressStartX = 0;
+                let pressStartY = 0;
+
+                const clearLongPress = () => {
+                    if (dragState.longPressTimer) {
+                        clearTimeout(dragState.longPressTimer);
+                        dragState.longPressTimer = null;
+                    }
+                    dragState.pending = false;
+                };
+
+                const activateDrag = (event) => {
+                    dragState.active = true;
+                    dragState.pending = false;
+                    dragState.startIndex = index;
+                    dragState.currentIndex = index;
+                    dragState.dragEl = taskItem;
+                    dragState.startY = event.clientY;
+                    dragState.pointerId = event.pointerId;
+
+                    taskItem.classList.add('dragging');
+                    tasksList.classList.add('dragging');
+                    taskItem.style.pointerEvents = 'none';
+
+                    const placeholder = document.createElement('div');
+                    placeholder.className = 'task-item drag-placeholder';
+                    placeholder.style.height = `${taskItem.offsetHeight}px`;
+                    dragState.placeholder = placeholder;
+                    taskItem.insertAdjacentElement('afterend', placeholder);
+
+                    taskItem.setPointerCapture(event.pointerId);
+                    document.addEventListener('pointermove', handleDragMove);
+                    document.addEventListener('pointerup', handleDragEnd);
+                    document.addEventListener('pointercancel', handleDragEnd);
+                };
+
+                const handleDragMove = (event) => {
+                    if (!dragState.active || dragState.dragEl !== taskItem || event.pointerId !== dragState.pointerId) {
+                        return;
+                    }
+
+                    event.preventDefault();
+                    dragState.lastX = event.clientX;
+                    dragState.lastY = event.clientY;
+                    if (dragState.rafId) return;
+
+                    dragState.rafId = requestAnimationFrame(() => {
+                        dragState.rafId = null;
+                        const diffY = dragState.lastY - dragState.startY;
+                        taskItem.style.transform = `translateY(${diffY}px) scale(1.02)`;
+
+                        let targetItem = null;
+                        const el = document.elementFromPoint(dragState.lastX, dragState.lastY);
+                        if (el) {
+                            const candidate = el.closest('.task-item');
+                            if (candidate && candidate !== taskItem && !candidate.classList.contains('drag-placeholder')) {
+                                targetItem = candidate;
+                            }
+                        }
+
+                        if (!targetItem) {
+                            const items = Array.from(tasksList.querySelectorAll('.task-item:not(.dragging):not(.drag-placeholder)'));
+                            if (items.length === 0) return;
+                            let closest = null;
+                            let closestDistance = Infinity;
+                            items.forEach(item => {
+                                const rect = item.getBoundingClientRect();
+                                const midY = rect.top + rect.height / 2;
+                                const distance = Math.abs(dragState.lastY - midY);
+                                if (distance < closestDistance) {
+                                    closestDistance = distance;
+                                    closest = item;
+                                }
+                            });
+                            targetItem = closest;
+                        }
+
+                        if (!targetItem) return;
+
+                        const rect = targetItem.getBoundingClientRect();
+                        const before = dragState.lastY < rect.top + rect.height / 2;
+                        const placeholder = dragState.placeholder;
+                        if (!placeholder) return;
+
+                        const prev = placeholder.previousElementSibling;
+                        const next = placeholder.nextElementSibling;
+                        if (before && targetItem === next) {
+                            return;
+                        }
+                        if (!before && targetItem === prev) {
+                            return;
+                        }
+
+                        if (before) {
+                            tasksList.insertBefore(placeholder, targetItem);
+                        } else {
+                            tasksList.insertBefore(placeholder, targetItem.nextSibling);
+                        }
+                    });
+                };
+
+                const handleDragEnd = (event) => {
+                    if (!dragState.active || dragState.dragEl !== taskItem || event.pointerId !== dragState.pointerId) {
+                        clearLongPress();
+                        return;
+                    }
+
+                    taskItem.releasePointerCapture(event.pointerId);
+                    document.removeEventListener('pointermove', handleDragMove);
+                    document.removeEventListener('pointerup', handleDragEnd);
+                    document.removeEventListener('pointercancel', handleDragEnd);
+                    if (dragState.rafId) {
+                        cancelAnimationFrame(dragState.rafId);
+                        dragState.rafId = null;
+                    }
+
+                    const children = Array.from(tasksList.children);
+                    const placeholderIndex = children.indexOf(dragState.placeholder);
+                    const dragIndex = children.indexOf(dragState.dragEl);
+                    let finalIndex = placeholderIndex;
+                    if (placeholderIndex > dragIndex) {
+                        finalIndex -= 1;
+                    }
+
+                    taskItem.style.transform = '';
+                    taskItem.style.pointerEvents = '';
+                    taskItem.classList.remove('dragging');
+                    tasksList.classList.remove('dragging');
+
+                    if (dragState.placeholder) {
+                        dragState.placeholder.remove();
+                    }
+
+                    dragState.active = false;
+                    dragState.dragEl = null;
+                    dragState.placeholder = null;
+                    dragState.pointerId = null;
+                    dragState.lastX = 0;
+                    dragState.lastY = 0;
+                    clearLongPress();
+
+                    if (finalIndex !== null && finalIndex >= 0 && finalIndex !== dragState.startIndex) {
+                        moveTask(project, dragState.startIndex, finalIndex);
+                    } else {
+                        renderTasks();
+                    }
+                };
+
+                taskItem.addEventListener('pointerdown', (event) => {
+                    if (event.button !== 0) return;
+                    if (event.target.closest('input, button')) return;
+                    if (dragState.active) return;
+
+                    pressStartX = event.clientX;
+                    pressStartY = event.clientY;
+                    dragState.pending = true;
+
+                    clearLongPress();
+                    dragState.longPressTimer = setTimeout(() => activateDrag(event), 300);
+                });
+
+                taskItem.addEventListener('pointermove', (event) => {
+                    if (!dragState.pending || dragState.active) return;
+                    const diffX = Math.abs(event.clientX - pressStartX);
+                    const diffY = Math.abs(event.clientY - pressStartY);
+                    if (diffX > 10 || diffY > 10) {
+                        clearLongPress();
+                    }
+                });
+
+                taskItem.addEventListener('pointerup', () => {
+                    if (!dragState.active) {
+                        clearLongPress();
+                    }
+                });
+
+                taskItem.addEventListener('pointercancel', () => {
+                    if (!dragState.active) {
+                        clearLongPress();
+                    }
+                });
                 
                 // Add swipe gesture support
                 let startX = 0;
@@ -1477,6 +1824,7 @@
                 let isVerticalScroll = false;
                 
                 taskItem.addEventListener('touchstart', (e) => {
+                    if (dragState.active || dragState.pending) return;
                     startX = e.touches[0].clientX;
                     startY = e.touches[0].clientY;
                     isSwiping = false;
@@ -1484,6 +1832,7 @@
                 });
                 
                 taskItem.addEventListener('touchmove', (e) => {
+                    if (dragState.active || dragState.pending) return;
                     currentX = e.touches[0].clientX;
                     currentY = e.touches[0].clientY;
                     const diffX = currentX - startX;
@@ -1521,6 +1870,7 @@
                 });
                 
                 taskItem.addEventListener('touchend', () => {
+                    if (dragState.active || dragState.pending) return;
                     if (isVerticalScroll) {
                         isVerticalScroll = false;
                         return;
@@ -1550,6 +1900,7 @@
                 
                 // Cancel swipe if touch is cancelled
                 taskItem.addEventListener('touchcancel', () => {
+                    if (dragState.active || dragState.pending) return;
                     taskItem.style.transform = '';
                     taskItem.classList.remove('swiping', 'swipe-left', 'swipe-right');
                     isSwiping = false;
@@ -1562,6 +1913,14 @@
                 
                 tasksList.appendChild(taskItem);
             });
+        }
+
+        function moveTask(project, fromIndex, toIndex) {
+            if (!project || fromIndex === toIndex) return;
+            const task = project.tasks.splice(fromIndex, 1)[0];
+            project.tasks.splice(toIndex, 0, task);
+            saveData();
+            renderTasks();
         }
 
         function addTask() {
@@ -1669,9 +2028,30 @@
             }
         });
     </script>
-    <script>
+<script>
 if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("./sw.js");
+  let refreshing = false;
+
+  navigator.serviceWorker.register("./sw.js").then(registration => {
+    registration.addEventListener("updatefound", () => {
+      const newWorker = registration.installing;
+      if (!newWorker) return;
+
+      newWorker.addEventListener("statechange", () => {
+        if (newWorker.state === "activated" && navigator.serviceWorker.controller) {
+          if (refreshing) return;
+          refreshing = true;
+          window.location.reload();
+        }
+      });
+    });
+  });
+
+  navigator.serviceWorker.addEventListener("controllerchange", () => {
+    if (refreshing) return;
+    refreshing = true;
+    window.location.reload();
+  });
 }
 </script>
 </body>
