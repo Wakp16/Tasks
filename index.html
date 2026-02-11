@@ -10,7 +10,7 @@
 
         :root {
             --bg: #050607;
-            --panel: rgba(10, 12, 14, 0.85);
+            --panel: rgba(10, 12, 14, 0.88);
             --panel-border: rgba(255, 255, 255, 0.12);
             --text: #f7f7f5;
             --muted: rgba(247, 247, 245, 0.6);
@@ -18,6 +18,20 @@
             --neon-lime: #b6ff3b;
             --neon-amber: #ffb347;
             --shadow-neon: 0 0 24px rgba(53, 240, 255, 0.35);
+            --matte-lift: rgba(255, 255, 255, 0.08);
+            --matte-vignette: rgba(0, 0, 0, 0.35);
+            --texture-fiber-opacity: 0.2;
+            --texture-fiber-color: rgba(255, 255, 255, 0.035);
+            --texture-fiber-highlight: rgba(255, 255, 255, 0.022);
+            --texture-fiber-scale: 2px;
+            --scroll-track: rgba(255, 255, 255, 0.09);
+            --scroll-thumb-start: rgba(53, 240, 255, 0.74);
+            --scroll-thumb-end: rgba(182, 255, 59, 0.62);
+            --scroll-thumb-border: rgba(255, 255, 255, 0.32);
+            --scroll-thumb-glow: 0 0 14px rgba(53, 240, 255, 0.32);
+            --scroll-size-v: 8px;
+            --scroll-size-h: 8px;
+            --scroll-radius: 999px;
         }
 
         * {
@@ -29,6 +43,7 @@
         body {
             font-family: 'Space Grotesk', system-ui, sans-serif;
             background-color: var(--bg);
+            background-image: linear-gradient(180deg, #0a0d10 0%, #06080a 48%, #040506 100%);
             color: var(--text);
             height: 100vh;
             overflow: hidden;
@@ -42,10 +57,31 @@
             position: fixed;
             inset: 0;
             background:
-                radial-gradient(1200px 600px at 20% -10%, rgba(53, 240, 255, 0.18), transparent 60%),
-                radial-gradient(1000px 800px at 110% 0%, rgba(182, 255, 59, 0.12), transparent 55%),
-                repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.03) 0px, rgba(255, 255, 255, 0.03) 1px, transparent 1px, transparent 24px),
-                repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.03) 0px, rgba(255, 255, 255, 0.03) 1px, transparent 1px, transparent 24px);
+                radial-gradient(800px 320px at 50% -18%, var(--matte-lift), transparent 72%),
+                repeating-linear-gradient(
+                    18deg,
+                    transparent 0,
+                    transparent calc(var(--texture-fiber-scale) * 2),
+                    var(--texture-fiber-color) calc(var(--texture-fiber-scale) * 2),
+                    var(--texture-fiber-color) calc(var(--texture-fiber-scale) * 3)
+                ),
+                repeating-linear-gradient(
+                    108deg,
+                    transparent 0,
+                    transparent calc(var(--texture-fiber-scale) * 3),
+                    var(--texture-fiber-highlight) calc(var(--texture-fiber-scale) * 3),
+                    var(--texture-fiber-highlight) calc(var(--texture-fiber-scale) * 4)
+                ),
+                repeating-linear-gradient(
+                    -6deg,
+                    transparent 0,
+                    transparent calc(var(--texture-fiber-scale) * 7),
+                    rgba(255, 255, 255, 0.012) calc(var(--texture-fiber-scale) * 7),
+                    rgba(255, 255, 255, 0.012) calc(var(--texture-fiber-scale) * 8)
+                );
+            opacity: var(--texture-fiber-opacity);
+            background-blend-mode: normal, soft-light, soft-light, normal;
+            filter: saturate(0.85);
             pointer-events: none;
             z-index: 0;
         }
@@ -54,10 +90,11 @@
             content: '';
             position: fixed;
             inset: 0;
-            background: radial-gradient(400px 200px at 50% 0%, rgba(255, 179, 71, 0.12), transparent 60%);
+            background: radial-gradient(130% 120% at 50% 50%, transparent 62%, var(--matte-vignette) 100%);
+            opacity: 0.12;
             pointer-events: none;
             z-index: 0;
-            mix-blend-mode: screen;
+            mix-blend-mode: normal;
         }
 
         .container {
@@ -149,22 +186,49 @@
             padding-right: 5px;
         }
 
-        .projects-list::-webkit-scrollbar {
-            width: 6px;
+        .projects-list,
+        .tasks-list,
+        .task-actions-scroll {
+            scrollbar-width: thin;
+            scrollbar-color: rgba(53, 240, 255, 0.74) var(--scroll-track);
         }
 
-        .projects-list::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
+        .projects-list::-webkit-scrollbar,
+        .tasks-list::-webkit-scrollbar,
+        .task-actions-scroll::-webkit-scrollbar {
+            width: var(--scroll-size-v);
+            height: var(--scroll-size-h);
         }
 
-        .projects-list::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 10px;
+        .projects-list::-webkit-scrollbar-track,
+        .tasks-list::-webkit-scrollbar-track,
+        .task-actions-scroll::-webkit-scrollbar-track {
+            background: var(--scroll-track);
+            border-radius: var(--scroll-radius);
         }
 
-        .projects-list::-webkit-scrollbar-thumb:hover {
-            background: rgba(255, 255, 255, 0.3);
+        .projects-list::-webkit-scrollbar-thumb,
+        .tasks-list::-webkit-scrollbar-thumb,
+        .task-actions-scroll::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, var(--scroll-thumb-start), var(--scroll-thumb-end));
+            border: 1px solid var(--scroll-thumb-border);
+            border-radius: var(--scroll-radius);
+            box-shadow: var(--scroll-thumb-glow), inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+        }
+
+        .projects-list::-webkit-scrollbar-corner,
+        .tasks-list::-webkit-scrollbar-corner,
+        .task-actions-scroll::-webkit-scrollbar-corner {
+            background: transparent;
+        }
+
+        @media (hover: hover) and (pointer: fine) {
+            .projects-list::-webkit-scrollbar-thumb:hover,
+            .tasks-list::-webkit-scrollbar-thumb:hover,
+            .task-actions-scroll::-webkit-scrollbar-thumb:hover {
+                background: linear-gradient(135deg, rgba(53, 240, 255, 0.9), rgba(182, 255, 59, 0.78));
+                box-shadow: 0 0 16px rgba(53, 240, 255, 0.42), inset 0 0 0 1px rgba(255, 255, 255, 0.22);
+            }
         }
 
         .project-item {
@@ -479,20 +543,6 @@
             padding-right: 5px;
         }
 
-        .tasks-list::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .tasks-list::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
-        }
-
-        .tasks-list::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 10px;
-        }
-
         .task-item {
             display: flex;
             align-items: center;
@@ -696,6 +746,19 @@
             gap: 10px;
         }
 
+        .task-actions-scroll {
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 10px;
+            margin-bottom: 15px;
+            max-width: 100%;
+            overflow-x: auto;
+            overflow-y: hidden;
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior-x: contain;
+            padding-bottom: 8px;
+        }
+
         .clear-all-btn {
             padding: 12px 20px;
             border: 1px solid rgba(255, 255, 255, 0.2);
@@ -707,6 +770,7 @@
             transition: all 0.3s ease;
             font-weight: 600;
             white-space: nowrap;
+            flex: 0 0 auto;
             -webkit-tap-highlight-color: transparent;
         }
 
@@ -928,6 +992,13 @@
                 padding: 30px 20px;
             }
 
+            :root {
+                --texture-fiber-opacity: 0.14;
+                --texture-fiber-scale: 1.75px;
+                --scroll-size-v: 7px;
+                --scroll-size-h: 7px;
+            }
+
             .header h1 {
                 font-size: 28px;
             }
@@ -942,6 +1013,17 @@
 
             .project-name {
                 font-size: 24px;
+            }
+
+            .task-actions-scroll {
+                gap: 8px;
+                overflow-x: auto;
+                overflow-y: hidden;
+                white-space: nowrap;
+            }
+
+            .clear-all-btn {
+                padding: 11px 16px;
             }
 
             .toast {
@@ -1018,7 +1100,7 @@
             <div class="project-header">
                 <input type="text" class="project-name" id="project-name" placeholder="Project Name">
             </div>
-            <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+            <div class="task-actions-scroll">
                 <button class="clear-all-btn" id="clear-all-btn">Clear</button>
                 <button class="clear-all-btn" id="copy-all-btn">Copy All</button>
                 <button class="clear-all-btn" id="paste-all-btn">Paste</button>
