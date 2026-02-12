@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <link rel="manifest" href="manifest.json">
     <meta charset="UTF-8">
@@ -9,26 +10,34 @@
         @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=Sora:wght@400;600;700&display=swap');
 
         :root {
-            --bg: #050607;
-            --panel: rgba(10, 12, 14, 0.88);
-            --panel-border: rgba(255, 255, 255, 0.12);
-            --text: #f7f7f5;
-            --muted: rgba(247, 247, 245, 0.6);
-            --neon-cyan: #35f0ff;
-            --neon-lime: #b6ff3b;
-            --neon-amber: #ffb347;
-            --shadow-neon: 0 0 24px rgba(53, 240, 255, 0.35);
-            --matte-lift: rgba(255, 255, 255, 0.08);
-            --matte-vignette: rgba(0, 0, 0, 0.35);
-            --texture-fiber-opacity: 0.2;
-            --texture-fiber-color: rgba(255, 255, 255, 0.035);
-            --texture-fiber-highlight: rgba(255, 255, 255, 0.022);
-            --texture-fiber-scale: 2px;
-            --scroll-track: rgba(255, 255, 255, 0.09);
-            --scroll-thumb-start: rgba(53, 240, 255, 0.74);
-            --scroll-thumb-end: rgba(182, 255, 59, 0.62);
-            --scroll-thumb-border: rgba(255, 255, 255, 0.32);
-            --scroll-thumb-glow: 0 0 14px rgba(53, 240, 255, 0.32);
+            --bg: #020205;
+            /* Deep black-purple */
+            --panel: rgba(13, 10, 20, 0.92);
+            /* Dark purple panel */
+            --panel-border: rgba(147, 51, 234, 0.3);
+            /* Purple border */
+            --text: #f3e8ff;
+            /* Lavender white */
+            --muted: rgba(243, 232, 255, 0.6);
+            --neon-purple: #a855f7;
+            /* Primary purple */
+            --neon-magenta: #d946ef;
+            /* Secondary magenta */
+            --neon-cyan: #a855f7;
+            /* Remapped for compatibility */
+            --neon-lime: #d946ef;
+            /* Remapped for compatibility */
+            --neon-pink: #ff00ff;
+            /* Keep for specific accents */
+            --shadow-neon: 0 0 24px rgba(168, 85, 247, 0.25);
+            --deep-space: #020205;
+            --nebula-purple: rgba(88, 28, 135, 0.4);
+            --nebula-blue: rgba(49, 46, 129, 0.3);
+            --scroll-track: rgba(255, 255, 255, 0.05);
+            --scroll-thumb-start: rgba(168, 85, 247, 0.7);
+            --scroll-thumb-end: rgba(217, 70, 239, 0.7);
+            --scroll-thumb-border: rgba(255, 255, 255, 0.2);
+            --scroll-thumb-glow: 0 0 14px rgba(168, 85, 247, 0.3);
             --scroll-size-v: 8px;
             --scroll-size-h: 8px;
             --scroll-radius: 999px;
@@ -42,8 +51,9 @@
 
         body {
             font-family: 'Space Grotesk', system-ui, sans-serif;
-            background-color: var(--bg);
-            background-image: linear-gradient(180deg, #0a0d10 0%, #06080a 48%, #040506 100%);
+            background-color: var(--deep-space);
+            background-image:
+                radial-gradient(circle at 50% 50%, #1a1d2e 0%, #050607 100%);
             color: var(--text);
             height: 100vh;
             overflow: hidden;
@@ -52,49 +62,73 @@
             position: relative;
         }
 
+        /* Stars */
         body::before {
             content: '';
             position: fixed;
             inset: 0;
-            background:
-                radial-gradient(800px 320px at 50% -18%, var(--matte-lift), transparent 72%),
-                repeating-linear-gradient(
-                    18deg,
-                    transparent 0,
-                    transparent calc(var(--texture-fiber-scale) * 2),
-                    var(--texture-fiber-color) calc(var(--texture-fiber-scale) * 2),
-                    var(--texture-fiber-color) calc(var(--texture-fiber-scale) * 3)
-                ),
-                repeating-linear-gradient(
-                    108deg,
-                    transparent 0,
-                    transparent calc(var(--texture-fiber-scale) * 3),
-                    var(--texture-fiber-highlight) calc(var(--texture-fiber-scale) * 3),
-                    var(--texture-fiber-highlight) calc(var(--texture-fiber-scale) * 4)
-                ),
-                repeating-linear-gradient(
-                    -6deg,
-                    transparent 0,
-                    transparent calc(var(--texture-fiber-scale) * 7),
-                    rgba(255, 255, 255, 0.012) calc(var(--texture-fiber-scale) * 7),
-                    rgba(255, 255, 255, 0.012) calc(var(--texture-fiber-scale) * 8)
-                );
-            opacity: var(--texture-fiber-opacity);
-            background-blend-mode: normal, soft-light, soft-light, normal;
-            filter: saturate(0.85);
-            pointer-events: none;
+            background-image:
+                radial-gradient(1px 1px at 10% 10%, #fff 100%, transparent),
+                radial-gradient(1px 1px at 20% 20%, #fff 100%, transparent),
+                radial-gradient(1px 1px at 30% 30%, #fff 100%, transparent),
+                radial-gradient(1px 1px at 40% 40%, #fff 100%, transparent),
+                radial-gradient(1px 1px at 50% 50%, #fff 100%, transparent),
+                radial-gradient(1px 1px at 60% 60%, #fff 100%, transparent),
+                radial-gradient(1px 1px at 70% 70%, #fff 100%, transparent),
+                radial-gradient(1px 1px at 80% 80%, #fff 100%, transparent),
+                radial-gradient(1px 1px at 90% 90%, #fff 100%, transparent),
+                radial-gradient(2px 2px at 15% 85%, #fff 100%, transparent),
+                radial-gradient(2px 2px at 85% 15%, #fff 100%, transparent);
+            background-size: 550px 550px;
+            opacity: 0.6;
             z-index: 0;
+            animation: starsMove 120s linear infinite;
         }
 
+        /* Nebula Clouds */
         body::after {
             content: '';
             position: fixed;
-            inset: 0;
-            background: radial-gradient(130% 120% at 50% 50%, transparent 62%, var(--matte-vignette) 100%);
-            opacity: 0.12;
-            pointer-events: none;
+            inset: -50%;
+            width: 200%;
+            height: 200%;
+            background:
+                radial-gradient(circle at 30% 30%, var(--nebula-purple), transparent 40%),
+                radial-gradient(circle at 70% 70%, var(--nebula-blue), transparent 40%),
+                radial-gradient(circle at 80% 20%, rgba(53, 240, 255, 0.1), transparent 30%);
+            filter: blur(60px);
+            opacity: 0.7;
             z-index: 0;
-            mix-blend-mode: normal;
+            animation: nebulaPulse 20s ease-in-out infinite alternate;
+            mix-blend-mode: screen;
+            pointer-events: none;
+        }
+
+        @keyframes starsMove {
+            from {
+                background-position: 0 0;
+            }
+
+            to {
+                background-position: 1000px 1000px;
+            }
+        }
+
+        @keyframes nebulaPulse {
+            0% {
+                transform: scale(1) translate(0, 0);
+                opacity: 0.6;
+            }
+
+            50% {
+                transform: scale(1.1) translate(-2%, -2%);
+                opacity: 0.8;
+            }
+
+            100% {
+                transform: scale(1) translate(0, 0);
+                opacity: 0.6;
+            }
         }
 
         .container {
@@ -125,6 +159,7 @@
                 opacity: 0;
                 transform: translateY(10px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -136,6 +171,7 @@
                 opacity: 0;
                 transform: translateY(20px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -147,6 +183,7 @@
                 transform: scale(0.95);
                 opacity: 0;
             }
+
             to {
                 transform: scale(1);
                 opacity: 1;
@@ -154,9 +191,12 @@
         }
 
         @keyframes float {
-            0%, 100% {
+
+            0%,
+            100% {
                 transform: translateY(0px);
             }
+
             50% {
                 transform: translateY(-5px);
             }
@@ -173,7 +213,7 @@
             font-weight: 700;
             letter-spacing: -0.8px;
             text-transform: uppercase;
-            background: linear-gradient(135deg, var(--text) 0%, var(--neon-cyan) 60%, var(--neon-lime) 100%);
+            background: linear-gradient(135deg, var(--text) 0%, var(--neon-purple) 60%, var(--neon-magenta) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -223,6 +263,7 @@
         }
 
         @media (hover: hover) and (pointer: fine) {
+
             .projects-list::-webkit-scrollbar-thumb:hover,
             .tasks-list::-webkit-scrollbar-thumb:hover,
             .task-actions-scroll::-webkit-scrollbar-thumb:hover {
@@ -256,7 +297,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 100%);
+            background: radial-gradient(circle, rgba(168, 85, 247, 0.5) 0%, transparent 70%);
             opacity: 0;
             transition: opacity 0.3s ease;
         }
@@ -267,7 +308,7 @@
             inset: -2px;
             border-radius: 16px;
             padding: 2px;
-            background: linear-gradient(135deg, rgba(53, 240, 255, 0.6), rgba(182, 255, 59, 0.6));
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.6), rgba(217, 70, 239, 0.6));
             -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
             mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
             -webkit-mask-composite: xor;
@@ -276,30 +317,46 @@
             transition: opacity 0.3s ease;
         }
 
-        .project-item:hover {
-            background: rgba(10, 12, 14, 0.95);
-            border-color: rgba(53, 240, 255, 0.45);
-            transform: translateY(-2px);
-            box-shadow: 0 12px 40px rgba(53, 240, 255, 0.25), 0 0 60px rgba(182, 255, 59, 0.12);
-        }
+        @media (hover: hover) and (pointer: fine) {
+            .project-item:hover {
+                background: rgba(13, 10, 20, 0.98);
+                border-color: rgba(168, 85, 247, 0.6);
+                transform: translateY(-2px);
+                box-shadow: 0 12px 40px rgba(168, 85, 247, 0.2), 0 0 60px rgba(217, 70, 239, 0.1);
+            }
 
-        .project-item:hover::before {
-            opacity: 1;
-        }
+            .project-item:hover::before {
+                opacity: 1;
+            }
 
-        .project-item:hover::after {
-            opacity: 1;
+            .project-item:hover::after {
+                opacity: 1;
+            }
         }
 
         .project-item:active {
             transform: translateY(0px) scale(0.98);
         }
 
-        .project-item:nth-child(1) { animation-delay: 0.1s; }
-        .project-item:nth-child(2) { animation-delay: 0.2s; }
-        .project-item:nth-child(3) { animation-delay: 0.3s; }
-        .project-item:nth-child(4) { animation-delay: 0.4s; }
-        .project-item:nth-child(5) { animation-delay: 0.5s; }
+        .project-item:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .project-item:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .project-item:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .project-item:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+
+        .project-item:nth-child(5) {
+            animation-delay: 0.5s;
+        }
 
         .project-content {
             flex: 1;
@@ -327,15 +384,15 @@
             .project-actions {
                 opacity: 0;
             }
-            
+
             .project-item:hover .project-actions {
                 opacity: 1;
             }
         }
 
         .project-action-btn {
-            background: rgba(53, 240, 255, 0.08);
-            border: 1px solid rgba(53, 240, 255, 0.35);
+            background: rgba(168, 85, 247, 0.1);
+            border: 1px solid rgba(168, 85, 247, 0.3);
             color: var(--text);
             min-width: 44px;
             min-height: 44px;
@@ -360,7 +417,7 @@
             inset: -2px;
             border-radius: 8px;
             padding: 2px;
-            background: linear-gradient(135deg, rgba(53, 240, 255, 0.5), rgba(182, 255, 59, 0.3));
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.5), rgba(217, 70, 239, 0.3));
             -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
             mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
             -webkit-mask-composite: xor;
@@ -369,14 +426,22 @@
             transition: opacity 0.3s ease;
         }
 
-        .project-action-btn:hover::before {
-            opacity: 1;
-        }
+        @media (hover: hover) and (pointer: fine) {
+            .project-action-btn:hover::before {
+                opacity: 1;
+            }
 
-        .project-action-btn:hover {
-            background: rgba(53, 240, 255, 0.2);
-            transform: scale(1.05);
-            box-shadow: var(--shadow-neon);
+            .task-checkbox:hover {
+                border-color: rgba(168, 85, 247, 0.7);
+                transform: scale(1.1);
+                box-shadow: 0 0 15px rgba(168, 85, 247, 0.5);
+            }
+
+            .project-action-btn:hover {
+                background: rgba(168, 85, 247, 0.25);
+                transform: scale(1.05);
+                box-shadow: var(--shadow-neon);
+            }
         }
 
         .project-action-btn:active {
@@ -400,8 +465,8 @@
         .add-project-btn {
             width: 100%;
             padding: 18px;
-            border: 1px solid rgba(182, 255, 59, 0.45);
-            background: rgba(10, 12, 14, 0.9);
+            border: 1px solid rgba(217, 70, 239, 0.45);
+            background: rgba(13, 10, 20, 0.9);
             color: var(--text);
             font-size: 16px;
             cursor: pointer;
@@ -433,7 +498,7 @@
             inset: -2px;
             border-radius: 16px;
             padding: 2px;
-            background: linear-gradient(135deg, rgba(182, 255, 59, 0.7), rgba(53, 240, 255, 0.6));
+            background: linear-gradient(135deg, rgba(217, 70, 239, 0.7), rgba(168, 85, 247, 0.6));
             -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
             mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
             -webkit-mask-composite: xor;
@@ -453,10 +518,10 @@
             }
 
             .add-project-btn:hover {
-                background: rgba(10, 12, 14, 0.95);
-                border-color: rgba(182, 255, 59, 0.7);
+                background: rgba(13, 10, 20, 0.95);
+                border-color: rgba(217, 70, 239, 0.7);
                 transform: translateY(-2px);
-                box-shadow: 0 10px 30px rgba(182, 255, 59, 0.25), 0 0 60px rgba(53, 240, 255, 0.2);
+                box-shadow: 0 10px 30px rgba(217, 70, 239, 0.25), 0 0 60px rgba(168, 85, 247, 0.2);
             }
         }
 
@@ -503,8 +568,8 @@
 
         @media (hover: hover) and (pointer: fine) {
             .back-btn:hover {
-                background: rgba(10, 12, 14, 0.95);
-                border-color: rgba(53, 240, 255, 0.45);
+                background: rgba(13, 10, 20, 0.95);
+                border-color: rgba(168, 85, 247, 0.45);
                 transform: translateX(-3px);
             }
         }
@@ -529,6 +594,14 @@
             color: var(--text);
             letter-spacing: -0.4px;
             text-transform: uppercase;
+            font-family: 'Sora', system-ui, sans-serif;
+        }
+
+        .task-checkbox.checked::after {
+            content: '\2713';
+            color: #0a0c0e;
+            font-size: 16px;
+            font-weight: bold;
             font-family: 'Sora', system-ui, sans-serif;
         }
 
@@ -571,10 +644,10 @@
             opacity: 0.7;
             transform: scale(1.02);
             box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
-            background: rgba(10, 12, 14, 0.95);
+            background: rgba(13, 10, 20, 0.95);
             transition: none;
             pointer-events: none;
-            border-bottom-color: rgba(53, 240, 255, 0.35);
+            border-bottom-color: rgba(168, 85, 247, 0.35);
         }
 
         .task-item.drag-placeholder {
@@ -627,7 +700,7 @@
             min-height: 28px;
             width: 28px;
             height: 28px;
-            border: 2px solid rgba(53, 240, 255, 0.35);
+            border: 2px solid rgba(168, 85, 247, 0.35);
             margin-right: 15px;
             cursor: pointer;
             flex-shrink: 0;
@@ -645,16 +718,16 @@
             position: absolute;
             inset: -4px;
             border-radius: 8px;
-            background: radial-gradient(circle, rgba(53, 240, 255, 0.5) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(168, 85, 247, 0.5) 0%, transparent 70%);
             opacity: 0;
             transition: opacity 0.3s ease;
         }
 
         @media (hover: hover) and (pointer: fine) {
             .task-checkbox:hover {
-                border-color: rgba(53, 240, 255, 0.7);
+                border-color: rgba(168, 85, 247, 0.7);
                 transform: scale(1.1);
-                box-shadow: 0 0 15px rgba(53, 240, 255, 0.5);
+                box-shadow: 0 0 15px rgba(168, 85, 247, 0.5);
             }
 
             .task-checkbox:hover::before {
@@ -664,21 +737,6 @@
 
         .task-checkbox:active {
             transform: scale(0.95);
-        }
-
-        .task-checkbox.checked {
-            background-color: var(--neon-lime);
-            border-color: var(--neon-lime);
-            animation: scaleIn 0.3s ease;
-            box-shadow: 0 0 20px rgba(182, 255, 59, 0.6);
-        }
-
-        .task-checkbox.checked::after {
-            content: '\2713';
-            color: #0a0c0e;
-            font-size: 16px;
-            font-weight: bold;
-            font-family: 'Sora', system-ui, sans-serif;
         }
 
         .task-text {
@@ -725,7 +783,7 @@
             .delete-task-btn {
                 opacity: 0;
             }
-            
+
             .task-item:hover .delete-task-btn {
                 opacity: 1;
             }
@@ -762,7 +820,7 @@
         .clear-all-btn {
             padding: 12px 20px;
             border: 1px solid rgba(255, 255, 255, 0.2);
-            background: rgba(10, 12, 14, 0.85);
+            background: rgba(13, 10, 20, 0.85);
             color: var(--muted);
             cursor: pointer;
             font-size: 14px;
@@ -776,8 +834,8 @@
 
         @media (hover: hover) and (pointer: fine) {
             .clear-all-btn:hover {
-                background: rgba(10, 12, 14, 0.95);
-                border-color: rgba(182, 255, 59, 0.5);
+                background: rgba(13, 10, 20, 0.95);
+                border-color: rgba(217, 70, 239, 0.5);
                 color: var(--text);
             }
         }
@@ -789,21 +847,22 @@
         .add-task-input {
             flex: 1;
             padding: 16px;
-            border: 1px solid rgba(53, 240, 255, 0.35);
+            border: 1px solid rgba(168, 85, 247, 0.35);
             outline: none;
             font-size: 16px;
             border-radius: 12px;
             font-family: inherit;
-            background: rgba(10, 12, 14, 0.85);
+            background: rgba(13, 10, 20, 0.85);
+
             color: var(--text);
             transition: all 0.3s ease;
             backdrop-filter: blur(10px);
         }
 
         .add-task-input:focus {
-            border-color: rgba(53, 240, 255, 0.7);
-            background: rgba(10, 12, 14, 0.95);
-            box-shadow: 0 0 20px rgba(53, 240, 255, 0.3), inset 0 0 20px rgba(53, 240, 255, 0.12);
+            border-color: rgba(168, 85, 247, 0.7);
+            background: rgba(13, 10, 20, 0.95);
+            box-shadow: 0 0 20px rgba(168, 85, 247, 0.3), inset 0 0 20px rgba(168, 85, 247, 0.12);
         }
 
         .add-task-input::placeholder {
@@ -812,8 +871,8 @@
 
         .add-task-submit {
             padding: 16px 24px;
-            border: 1px solid rgba(53, 240, 255, 0.45);
-            background: rgba(53, 240, 255, 0.14);
+            border: 1px solid rgba(168, 85, 247, 0.45);
+            background: rgba(168, 85, 247, 0.14);
             color: var(--text);
             cursor: pointer;
             font-size: 16px;
@@ -822,9 +881,11 @@
             font-weight: 600;
         }
 
-        .add-task-submit:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(53, 240, 255, 0.25), 0 0 40px rgba(182, 255, 59, 0.18);
+        @media (hover: hover) and (pointer: fine) {
+            .add-task-submit:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 24px rgba(168, 85, 247, 0.25), 0 0 40px rgba(217, 70, 239, 0.18);
+            }
         }
 
         .add-task-submit:active {
@@ -852,14 +913,21 @@
         }
 
         .modal-content {
-            background-color: #1a1a1a;
+            background-color: rgba(13, 10, 20, 0.95);
             padding: 32px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(168, 85, 247, 0.3);
             max-width: 400px;
             width: 90%;
             border-radius: 20px;
             animation: scaleIn 0.3s ease;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 30px rgba(168, 85, 247, 0.1);
+        }
+
+        .task-checkbox.checked {
+            background-color: var(--neon-pink);
+            border-color: var(--neon-pink);
+            animation: scaleIn 0.3s ease;
+            box-shadow: 0 0 20px rgba(255, 0, 255, 0.6);
         }
 
         .modal-content h2 {
@@ -923,9 +991,11 @@
             color: #000000;
         }
 
-        .modal-btn.confirm:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(255, 255, 255, 0.3);
+        @media (hover: hover) and (pointer: fine) {
+            .modal-btn.confirm:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(255, 255, 255, 0.3);
+            }
         }
 
         .modal-btn:active {
@@ -1080,6 +1150,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <!-- Projects View (Right picture in sketch) -->
@@ -1104,11 +1175,13 @@
                 <button class="clear-all-btn" id="clear-all-btn">Clear</button>
                 <button class="clear-all-btn" id="copy-all-btn">Copy All</button>
                 <button class="clear-all-btn" id="paste-all-btn">Paste</button>
-                <button class="clear-all-btn" id="delete-all-btn" style="border-color: rgba(255, 59, 48, 0.45); color: rgba(255, 59, 48, 0.9);">Delete All</button>
+                <button class="clear-all-btn" id="delete-all-btn"
+                    style="border-color: rgba(255, 59, 48, 0.45); color: rgba(255, 59, 48, 0.9);">Delete All</button>
             </div>
             <div class="tasks-list" id="tasks-list"></div>
             <div class="add-task-container">
-                <input type="text" class="add-task-input" id="add-task-input" placeholder="Add task name" enterkeyhint="done" autocomplete="off">
+                <input type="text" class="add-task-input" id="add-task-input" placeholder="Add task name"
+                    enterkeyhint="done" autocomplete="off">
                 <button class="add-task-submit" id="add-task-submit">Add</button>
             </div>
         </div>
@@ -1118,7 +1191,8 @@
     <div class="modal" id="project-modal">
         <div class="modal-content">
             <h2>New Project</h2>
-            <input type="text" class="modal-input" id="project-modal-input" placeholder="Enter project name" enterkeyhint="done" autocomplete="off">
+            <input type="text" class="modal-input" id="project-modal-input" placeholder="Enter project name"
+                enterkeyhint="done" autocomplete="off">
             <div class="modal-buttons">
                 <button class="modal-btn cancel" id="modal-cancel">Cancel</button>
                 <button class="modal-btn confirm" id="modal-confirm">Create</button>
@@ -1130,10 +1204,13 @@
     <div class="modal" id="delete-modal">
         <div class="modal-content">
             <h2>Delete Project</h2>
-            <p id="delete-modal-message" style="margin-bottom: 24px; color: rgba(255, 255, 255, 0.7); line-height: 1.5;">Are you sure you want to delete this project?</p>
+            <p id="delete-modal-message"
+                style="margin-bottom: 24px; color: rgba(255, 255, 255, 0.7); line-height: 1.5;">Are you sure you want to
+                delete this project?</p>
             <div class="modal-buttons">
                 <button class="modal-btn cancel" id="delete-modal-cancel">Cancel</button>
-                <button class="modal-btn confirm" id="delete-modal-confirm" style="background: rgba(255, 59, 48, 0.8); border-color: rgba(255, 59, 48, 0.4);">Delete</button>
+                <button class="modal-btn confirm" id="delete-modal-confirm"
+                    style="background: rgba(255, 59, 48, 0.8); border-color: rgba(255, 59, 48, 0.4);">Delete</button>
             </div>
         </div>
     </div>
@@ -1142,10 +1219,13 @@
     <div class="modal" id="delete-all-modal">
         <div class="modal-content">
             <h2>Delete All Tasks</h2>
-            <p id="delete-all-modal-message" style="margin-bottom: 24px; color: rgba(255, 255, 255, 0.7); line-height: 1.5;">Are you sure you want to delete all tasks?</p>
+            <p id="delete-all-modal-message"
+                style="margin-bottom: 24px; color: rgba(255, 255, 255, 0.7); line-height: 1.5;">Are you sure you want to
+                delete all tasks?</p>
             <div class="modal-buttons">
                 <button class="modal-btn cancel" id="delete-all-modal-cancel">Cancel</button>
-                <button class="modal-btn confirm" id="delete-all-modal-confirm" style="background: rgba(255, 59, 48, 0.8); border-color: rgba(255, 59, 48, 0.4);">Delete</button>
+                <button class="modal-btn confirm" id="delete-all-modal-confirm"
+                    style="background: rgba(255, 59, 48, 0.8); border-color: rgba(255, 59, 48, 0.4);">Delete</button>
             </div>
         </div>
     </div>
@@ -1211,7 +1291,7 @@
 
         // Initialize
         renderProjects();
-        
+
         // Set initial history state
         window.history.replaceState({ view: 'projects' }, '', '');
 
@@ -1277,7 +1357,7 @@
             if (project && project.tasks.length > 0) {
                 // Check if there are any completed tasks
                 const hasCompletedTasks = project.tasks.some(task => task.completed);
-                
+
                 if (hasCompletedTasks) {
                     // Uncheck all tasks
                     project.tasks.forEach(task => {
@@ -1308,7 +1388,7 @@
                     const checkbox = task.completed ? '[x]' : '[ ]';
                     return `${checkbox} ${task.text}`;
                 }).join('\n');
-                
+
                 // Use fallback method (more reliable across browsers)
                 const textArea = document.createElement('textarea');
                 textArea.value = taskList;
@@ -1326,7 +1406,7 @@
                 document.body.appendChild(textArea);
                 textArea.focus();
                 textArea.select();
-                
+
                 try {
                     const successful = document.execCommand('copy');
                     if (successful) {
@@ -1468,28 +1548,28 @@
             if (deletingProjectId) {
                 // Store the deleted project for undo
                 deletedProject = projects.find(p => p.id === deletingProjectId);
-                
+
                 // Filter out the project
-                projects = projects.filter(function(p) {
+                projects = projects.filter(function (p) {
                     return p.id !== deletingProjectId;
                 });
-                
+
                 // Save to localStorage
                 localStorage.setItem('projects', JSON.stringify(projects));
-                
+
                 // If viewing this project, go back
                 if (currentProjectId === deletingProjectId) {
                     currentProjectId = null;
                     showProjectsView();
                 }
-                
+
                 // Re-render the list
                 renderProjects();
-                
+
                 // Close modal
                 deleteModal.classList.remove('active');
                 deletingProjectId = null;
-                
+
                 // Show toast with undo option
                 showToast('Project "' + deletedProject.name + '" deleted');
             }
@@ -1579,37 +1659,37 @@
             projects.forEach(project => {
                 const projectItem = document.createElement('div');
                 projectItem.className = 'project-item';
-                
+
                 // Create content section
                 const projectContent = document.createElement('div');
                 projectContent.className = 'project-content';
-                
+
                 const projectTitle = document.createElement('div');
                 projectTitle.className = 'project-title';
                 projectTitle.textContent = project.name;
-                
+
                 projectContent.appendChild(projectTitle);
-                
+
                 // Create actions section
                 const projectActions = document.createElement('div');
                 projectActions.className = 'project-actions';
-                
+
                 const editBtn = document.createElement('button');
                 editBtn.className = 'project-action-btn edit';
                 editBtn.title = 'Edit';
                 editBtn.innerHTML = '✎';
-                
+
                 const deleteBtn = document.createElement('button');
                 deleteBtn.className = 'project-action-btn delete';
                 deleteBtn.title = 'Delete';
                 deleteBtn.innerHTML = '×';
-                
+
                 // Handle edit button click
-                editBtn.onclick = function(e) {
+                editBtn.onclick = function (e) {
                     e.stopPropagation();
                     e.stopImmediatePropagation();
                     e.preventDefault();
-                    
+
                     editingProjectId = project.id;
                     const proj = projects.find(p => p.id === project.id);
                     if (proj) {
@@ -1621,40 +1701,40 @@
                     }
                     return false;
                 };
-                
+
                 // Handle delete button click
-                deleteBtn.onclick = function(e) {
+                deleteBtn.onclick = function (e) {
                     e.stopPropagation();
                     e.stopImmediatePropagation();
                     e.preventDefault();
-                    
+
                     // Set the deleting project ID
                     deletingProjectId = project.id;
-                    
+
                     // Update modal message
                     deleteModalMessage.textContent = 'Are you sure you want to delete "' + project.name + '"? This will permanently delete the project and all its tasks.';
-                    
+
                     // Show modal
                     deleteModal.classList.add('active');
-                    
+
                     return false;
                 };
-                
+
                 projectActions.appendChild(editBtn);
                 projectActions.appendChild(deleteBtn);
-                
+
                 projectItem.appendChild(projectContent);
                 projectItem.appendChild(projectActions);
-                
+
                 // Handle project item click to open
-                projectItem.onclick = function(e) {
+                projectItem.onclick = function (e) {
                     // Check if click is on a button
                     if (e.target.tagName === 'BUTTON' || e.target.closest('button')) {
                         return false;
                     }
                     openProject(project.id);
                 };
-                
+
                 projectsList.appendChild(projectItem);
             });
         }
@@ -1679,19 +1759,19 @@
             project.tasks.forEach((task, index) => {
                 const taskItem = document.createElement('div');
                 taskItem.className = 'task-item';
-                
+
                 // Add swipe indicators
                 const swipeLeftIndicator = document.createElement('div');
                 swipeLeftIndicator.className = 'swipe-indicator left';
                 swipeLeftIndicator.textContent = '✓';
-                
+
                 const swipeRightIndicator = document.createElement('div');
                 swipeRightIndicator.className = 'swipe-indicator right';
                 swipeRightIndicator.textContent = '✕';
-                
+
                 taskItem.appendChild(swipeLeftIndicator);
                 taskItem.appendChild(swipeRightIndicator);
-                
+
                 const checkbox = document.createElement('div');
                 checkbox.className = `task-checkbox ${task.completed ? 'checked' : ''}`;
                 checkbox.addEventListener('click', () => toggleTask(index));
@@ -1896,7 +1976,7 @@
                         clearLongPress();
                     }
                 });
-                
+
                 // Add swipe gesture support
                 let startX = 0;
                 let startY = 0;
@@ -1904,7 +1984,7 @@
                 let currentY = 0;
                 let isSwiping = false;
                 let isVerticalScroll = false;
-                
+
                 taskItem.addEventListener('touchstart', (e) => {
                     if (dragState.active || dragState.pending) return;
                     startX = e.touches[0].clientX;
@@ -1912,14 +1992,14 @@
                     isSwiping = false;
                     isVerticalScroll = false;
                 });
-                
+
                 taskItem.addEventListener('touchmove', (e) => {
                     if (dragState.active || dragState.pending) return;
                     currentX = e.touches[0].clientX;
                     currentY = e.touches[0].clientY;
                     const diffX = currentX - startX;
                     const diffY = currentY - startY;
-                    
+
                     // Determine if it's a vertical scroll or horizontal swipe
                     if (!isSwiping && !isVerticalScroll) {
                         if (Math.abs(diffY) > Math.abs(diffX)) {
@@ -1932,13 +2012,13 @@
                             taskItem.classList.add('swiping');
                         }
                     }
-                    
+
                     if (!isSwiping) return;
-                    
+
                     // Prevent scrolling when swiping
                     e.preventDefault();
                     taskItem.style.transform = `translateX(${diffX}px)`;
-                    
+
                     // Show visual feedback (increased threshold to 80px)
                     if (diffX > 80) {
                         taskItem.classList.add('swipe-right');
@@ -1950,25 +2030,25 @@
                         taskItem.classList.remove('swipe-left', 'swipe-right');
                     }
                 });
-                
+
                 taskItem.addEventListener('touchend', () => {
                     if (dragState.active || dragState.pending) return;
                     if (isVerticalScroll) {
                         isVerticalScroll = false;
                         return;
                     }
-                    
+
                     if (!isSwiping) return;
-                    
+
                     const diffX = currentX - startX;
-                    
+
                     // Increased thresholds: Swipe right to complete (150px), swipe left to delete (150px)
                     if (diffX > 150) {
                         toggleTask(index);
                     } else if (diffX < -150) {
                         deleteTask(index);
                     }
-                    
+
                     // Reset
                     taskItem.style.transform = '';
                     taskItem.classList.remove('swiping', 'swipe-left', 'swipe-right');
@@ -1979,7 +2059,7 @@
                     currentX = 0;
                     currentY = 0;
                 });
-                
+
                 // Cancel swipe if touch is cancelled
                 taskItem.addEventListener('touchcancel', () => {
                     if (dragState.active || dragState.pending) return;
@@ -1992,7 +2072,7 @@
                     currentX = 0;
                     currentY = 0;
                 });
-                
+
                 tasksList.appendChild(taskItem);
             });
         }
@@ -2073,12 +2153,12 @@
         function showToast(message) {
             toastMessage.textContent = message;
             toast.classList.add('show');
-            
+
             // Clear any existing timeout
             if (toastTimeout) {
                 clearTimeout(toastTimeout);
             }
-            
+
             // Auto-hide after 5 seconds
             toastTimeout = setTimeout(() => {
                 hideToast();
@@ -2104,37 +2184,38 @@
                 projects.push(deletedProject);
                 saveData();
                 renderProjects();
-                
+
                 // Hide toast immediately
                 hideToast();
             }
         });
     </script>
-<script>
-if ("serviceWorker" in navigator) {
-  let refreshing = false;
+    <script>
+        if ("serviceWorker" in navigator) {
+            let refreshing = false;
 
-  navigator.serviceWorker.register("./sw.js").then(registration => {
-    registration.addEventListener("updatefound", () => {
-      const newWorker = registration.installing;
-      if (!newWorker) return;
+            navigator.serviceWorker.register("./sw.js").then(registration => {
+                registration.addEventListener("updatefound", () => {
+                    const newWorker = registration.installing;
+                    if (!newWorker) return;
 
-      newWorker.addEventListener("statechange", () => {
-        if (newWorker.state === "activated" && navigator.serviceWorker.controller) {
-          if (refreshing) return;
-          refreshing = true;
-          window.location.reload();
+                    newWorker.addEventListener("statechange", () => {
+                        if (newWorker.state === "activated" && navigator.serviceWorker.controller) {
+                            if (refreshing) return;
+                            refreshing = true;
+                            window.location.reload();
+                        }
+                    });
+                });
+            });
+
+            navigator.serviceWorker.addEventListener("controllerchange", () => {
+                if (refreshing) return;
+                refreshing = true;
+                window.location.reload();
+            });
         }
-      });
-    });
-  });
-
-  navigator.serviceWorker.addEventListener("controllerchange", () => {
-    if (refreshing) return;
-    refreshing = true;
-    window.location.reload();
-  });
-}
-</script>
+    </script>
 </body>
+
 </html>
