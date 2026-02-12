@@ -1,4 +1,4 @@
-const CACHE_NAME = "minimal-tasks-v2";
+const CACHE_NAME = "minimal-tasks-v3";
 const CURRENT_CACHES = [CACHE_NAME];
 const FILES_TO_CACHE = [
   "./",

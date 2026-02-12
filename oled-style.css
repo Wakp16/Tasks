@@ -1,0 +1,1128 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=Sora:wght@400;600;700&display=swap');
+
+:root {
+    --bg: #000000;
+    /* Pure black */
+    --panel: rgba(20, 20, 25, 0.95);
+    /* Darker, flatter panel */
+    --panel-border: rgba(147, 51, 234, 0.15);
+    /* Subtle purple border */
+    --text: #ffffff;
+    /* Pure white */
+    --muted: rgba(255, 255, 255, 0.6);
+    --neon-purple: #a855f7;
+    /* Primary purple */
+    --neon-magenta: #d946ef;
+    /* Secondary magenta */
+    --neon-cyan: #a855f7;
+    /* Remapped for compatibility */
+    --neon-lime: #d946ef;
+    /* Remapped for compatibility */
+    --neon-pink: #ff00ff;
+    /* Keep for specific accents */
+    --shadow-neon: 0 0 24px rgba(168, 85, 247, 0.15);
+    --deep-space: #000000;
+    --nebula-purple: rgba(88, 28, 135, 0.4);
+    --nebula-blue: rgba(49, 46, 129, 0.3);
+    --scroll-track: rgba(255, 255, 255, 0.05);
+    --scroll-thumb-start: rgba(168, 85, 247, 0.7);
+    --scroll-thumb-end: rgba(217, 70, 239, 0.7);
+    --scroll-thumb-border: rgba(255, 255, 255, 0.2);
+    --scroll-thumb-glow: 0 0 14px rgba(168, 85, 247, 0.3);
+    --scroll-size-v: 8px;
+    --scroll-size-h: 8px;
+    --scroll-radius: 999px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    background-color: var(--deep-space);
+    background-image: none;
+    color: var(--text);
+    height: 100vh;
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    position: relative;
+}
+
+/* Stars - Removed for OLED Performance */
+body::before {
+    display: none;
+}
+
+/* Nebula Clouds - Removed for OLED Performance */
+body::after {
+    display: none;
+}
+
+@keyframes starsMove {
+    from {
+        background-position: 0 0;
+    }
+
+    to {
+        background-position: 1000px 1000px;
+    }
+}
+
+@keyframes nebulaPulse {
+    0% {
+        transform: scale(1) translate(0, 0);
+        opacity: 0.6;
+    }
+
+    50% {
+        transform: scale(1.1) translate(-2%, -2%);
+        opacity: 0.8;
+    }
+
+    100% {
+        transform: scale(1) translate(0, 0);
+        opacity: 0.6;
+    }
+}
+
+.container {
+    max-width: 500px;
+    margin: 0 auto;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 40px 30px;
+    position: relative;
+    z-index: 1;
+}
+
+/* Projects View */
+#projects-view {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    animation: fadeIn 0.4s ease;
+}
+
+#projects-view.hidden {
+    display: none;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes scaleIn {
+    from {
+        transform: scale(0.95);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-5px);
+    }
+}
+
+.header {
+    margin-bottom: 40px;
+    animation: slideUp 0.5s ease;
+}
+
+.header h1 {
+    font-family: 'Sora', system-ui, sans-serif;
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: -0.8px;
+    text-transform: uppercase;
+    background: linear-gradient(135deg, var(--text) 0%, var(--neon-purple) 60%, var(--neon-magenta) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.projects-list {
+    flex: 1;
+    overflow-y: auto;
+    margin-bottom: 20px;
+    padding-right: 5px;
+}
+
+.projects-list,
+.tasks-list,
+.task-actions-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(53, 240, 255, 0.74) var(--scroll-track);
+}
+
+.projects-list::-webkit-scrollbar,
+.tasks-list::-webkit-scrollbar,
+.task-actions-scroll::-webkit-scrollbar {
+    width: var(--scroll-size-v);
+    height: var(--scroll-size-h);
+}
+
+.projects-list::-webkit-scrollbar-track,
+.tasks-list::-webkit-scrollbar-track,
+.task-actions-scroll::-webkit-scrollbar-track {
+    background: var(--scroll-track);
+    border-radius: var(--scroll-radius);
+}
+
+.projects-list::-webkit-scrollbar-thumb,
+.tasks-list::-webkit-scrollbar-thumb,
+.task-actions-scroll::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, var(--scroll-thumb-start), var(--scroll-thumb-end));
+    border: 1px solid var(--scroll-thumb-border);
+    border-radius: var(--scroll-radius);
+    box-shadow: var(--scroll-thumb-glow), inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+}
+
+.projects-list::-webkit-scrollbar-corner,
+.tasks-list::-webkit-scrollbar-corner,
+.task-actions-scroll::-webkit-scrollbar-corner {
+    background: transparent;
+}
+
+@media (hover: hover) and (pointer: fine) {
+
+    .projects-list::-webkit-scrollbar-thumb:hover,
+    .tasks-list::-webkit-scrollbar-thumb:hover,
+    .task-actions-scroll::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(135deg, rgba(53, 240, 255, 0.9), rgba(182, 255, 59, 0.78));
+        box-shadow: 0 0 16px rgba(53, 240, 255, 0.42), inset 0 0 0 1px rgba(255, 255, 255, 0.22);
+    }
+}
+
+.project-item {
+    background: var(--panel);
+    border: 1px solid var(--panel-border);
+    padding: 24px;
+    margin-bottom: 15px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 16px;
+    position: relative;
+    overflow: hidden;
+    animation: slideUp 0.5s ease backwards;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+    will-change: transform;
+}
+
+.project-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(168, 85, 247, 0.5) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.project-item::after {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 16px;
+    padding: 2px;
+    background: linear-gradient(135deg, rgba(168, 85, 247, 0.6), rgba(217, 70, 239, 0.6));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .project-item:hover {
+        background: rgba(13, 10, 20, 0.98);
+        border-color: rgba(168, 85, 247, 0.6);
+        transform: translateY(-2px);
+        box-shadow: 0 12px 40px rgba(168, 85, 247, 0.2), 0 0 60px rgba(217, 70, 239, 0.1);
+    }
+
+    .project-item:hover::before {
+        opacity: 1;
+    }
+
+    .project-item:hover::after {
+        opacity: 1;
+    }
+}
+
+.project-item:active {
+    transform: translateY(0px) scale(0.98);
+}
+
+.project-item:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.project-item:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.project-item:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+.project-item:nth-child(4) {
+    animation-delay: 0.4s;
+}
+
+.project-item:nth-child(5) {
+    animation-delay: 0.5s;
+}
+
+.project-content {
+    flex: 1;
+}
+
+.project-title {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: -0.1px;
+    text-transform: uppercase;
+}
+
+.project-actions {
+    display: flex;
+    gap: 8px;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+    position: relative;
+    z-index: 10;
+    pointer-events: auto;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .project-actions {
+        opacity: 0;
+    }
+
+    .project-item:hover .project-actions {
+        opacity: 1;
+    }
+}
+
+.project-action-btn {
+    background: rgba(168, 85, 247, 0.1);
+    border: 1px solid rgba(168, 85, 247, 0.3);
+    color: var(--text);
+    min-width: 44px;
+    min-height: 44px;
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    font-size: 18px;
+    position: relative;
+    z-index: 100;
+    pointer-events: auto;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.project-action-btn::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 8px;
+    padding: 2px;
+    background: linear-gradient(135deg, rgba(168, 85, 247, 0.5), rgba(217, 70, 239, 0.3));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .project-action-btn:hover::before {
+        opacity: 1;
+    }
+
+    .task-checkbox:hover {
+        border-color: rgba(168, 85, 247, 0.7);
+        transform: scale(1.1);
+        box-shadow: 0 0 15px rgba(168, 85, 247, 0.5);
+    }
+
+    .project-action-btn:hover {
+        background: rgba(168, 85, 247, 0.25);
+        transform: scale(1.05);
+        box-shadow: var(--shadow-neon);
+    }
+}
+
+.project-action-btn:active {
+    transform: scale(0.95);
+}
+
+.project-action-btn.delete:hover {
+    background: rgba(255, 59, 48, 0.2);
+    border-color: rgba(255, 59, 48, 0.4);
+    box-shadow: 0 0 20px rgba(255, 59, 48, 0.5);
+}
+
+.project-action-btn.delete:hover::before {
+    background: linear-gradient(135deg, rgba(255, 59, 48, 0.5), rgba(255, 59, 48, 0.2));
+}
+
+.project-action-btn.edit:hover {
+    box-shadow: 0 0 20px rgba(53, 240, 255, 0.45);
+}
+
+.add-project-btn {
+    width: 100%;
+    padding: 18px;
+    border: 1px solid rgba(217, 70, 239, 0.45);
+    background: rgba(13, 10, 20, 0.9);
+    color: var(--text);
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 16px;
+    font-weight: 600;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+    -webkit-tap-highlight-color: transparent;
+    will-change: transform;
+}
+
+.add-project-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.add-project-btn::after {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 16px;
+    padding: 2px;
+    background: linear-gradient(135deg, rgba(217, 70, 239, 0.7), rgba(168, 85, 247, 0.6));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .add-project-btn:hover::before {
+        width: 300px;
+        height: 300px;
+    }
+
+    .add-project-btn:hover::after {
+        opacity: 1;
+    }
+
+    .add-project-btn:hover {
+        background: rgba(13, 10, 20, 0.95);
+        border-color: rgba(217, 70, 239, 0.7);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 30px rgba(217, 70, 239, 0.25), 0 0 60px rgba(168, 85, 247, 0.2);
+    }
+}
+
+.add-project-btn:active {
+    transform: scale(0.98);
+}
+
+.add-project-btn span {
+    position: relative;
+    z-index: 1;
+}
+
+/* Tasks View */
+#tasks-view {
+    display: none;
+    flex-direction: column;
+    height: 100%;
+}
+
+#tasks-view.active {
+    display: flex;
+    animation: fadeIn 0.4s ease;
+}
+
+.back-btn {
+    background: var(--panel);
+    border: 1px solid var(--panel-border);
+    font-size: 16px;
+    cursor: pointer;
+    padding: 12px 20px;
+    margin-bottom: 20px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border-radius: 12px;
+    color: var(--text);
+    transition: all 0.3s ease;
+    -webkit-tap-highlight-color: transparent;
+    font-weight: 600;
+    width: fit-content;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .back-btn:hover {
+        background: rgba(13, 10, 20, 0.95);
+        border-color: rgba(168, 85, 247, 0.45);
+        transform: translateX(-3px);
+    }
+}
+
+.back-btn:active {
+    transform: scale(0.95);
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.project-header {
+    margin-bottom: 30px;
+}
+
+.project-name {
+    font-size: 28px;
+    font-weight: 700;
+    border: none;
+    outline: none;
+    width: 100%;
+    padding: 8px 0;
+    background: transparent;
+    color: var(--text);
+    letter-spacing: -0.4px;
+    text-transform: uppercase;
+    font-family: 'Sora', system-ui, sans-serif;
+}
+
+.task-checkbox.checked::after {
+    content: '\2713';
+    color: #0a0c0e;
+    font-size: 16px;
+    font-weight: bold;
+    font-family: 'Sora', system-ui, sans-serif;
+}
+
+.project-name::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+.tasks-list {
+    flex: 1;
+    overflow-y: auto;
+    margin-bottom: 20px;
+    padding-right: 5px;
+}
+
+.task-item {
+    display: flex;
+    align-items: center;
+    padding: 18px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    transition: transform 160ms ease, padding-left 0.2s ease, opacity 0.2s ease;
+    animation: slideUp 0.3s ease backwards;
+    position: relative;
+    touch-action: pan-y;
+    will-change: transform, opacity;
+}
+
+.task-item.swiping {
+    transition: none;
+}
+
+.tasks-list.dragging {
+    cursor: grabbing;
+}
+
+.tasks-list.dragging .task-item:hover {
+    padding-left: 0;
+}
+
+.task-item.dragging {
+    z-index: 5;
+    opacity: 0.7;
+    transform: scale(1.02);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+    background: rgba(13, 10, 20, 0.95);
+    transition: none;
+    pointer-events: none;
+    border-bottom-color: rgba(168, 85, 247, 0.35);
+}
+
+.task-item.drag-placeholder {
+    border: 1px dashed rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    margin: 6px 0;
+    transition: height 120ms ease, margin 120ms ease;
+}
+
+.task-item.swipe-left {
+    background: linear-gradient(90deg, transparent, rgba(255, 59, 48, 0.2));
+}
+
+.task-item.swipe-right {
+    background: linear-gradient(90deg, rgba(52, 199, 89, 0.2), transparent);
+}
+
+.task-item:hover {
+    padding-left: 8px;
+}
+
+.swipe-indicator {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 24px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.swipe-indicator.left {
+    left: 20px;
+    color: rgba(52, 199, 89, 0.8);
+}
+
+.swipe-indicator.right {
+    right: 20px;
+    color: rgba(255, 59, 48, 0.8);
+}
+
+.task-item.swipe-left .swipe-indicator.right {
+    opacity: 1;
+}
+
+.task-item.swipe-right .swipe-indicator.left {
+    opacity: 1;
+}
+
+.task-checkbox {
+    min-width: 28px;
+    min-height: 28px;
+    width: 28px;
+    height: 28px;
+    border: 2px solid rgba(168, 85, 247, 0.35);
+    margin-right: 15px;
+    cursor: pointer;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.task-checkbox::before {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: 8px;
+    background: radial-gradient(circle, rgba(168, 85, 247, 0.5) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .task-checkbox:hover {
+        border-color: rgba(168, 85, 247, 0.7);
+        transform: scale(1.1);
+        box-shadow: 0 0 15px rgba(168, 85, 247, 0.5);
+    }
+
+    .task-checkbox:hover::before {
+        opacity: 1;
+    }
+}
+
+.task-checkbox:active {
+    transform: scale(0.95);
+}
+
+.task-text {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    background: transparent;
+    font-family: inherit;
+    color: var(--text);
+    transition: all 0.3s ease;
+}
+
+.task-text::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+.task-text.completed {
+    text-decoration: line-through;
+    opacity: 0.4;
+}
+
+.delete-task-btn {
+    background: rgba(255, 59, 48, 0.12);
+    border: 1px solid rgba(255, 59, 48, 0.35);
+    color: rgba(255, 59, 48, 0.9);
+    min-width: 40px;
+    min-height: 40px;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    font-size: 20px;
+    cursor: pointer;
+    opacity: 1;
+    transition: all 0.3s ease;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    -webkit-tap-highlight-color: transparent;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .delete-task-btn {
+        opacity: 0;
+    }
+
+    .task-item:hover .delete-task-btn {
+        opacity: 1;
+    }
+}
+
+.delete-task-btn:hover {
+    background: rgba(255, 59, 48, 0.2);
+    border-color: rgba(255, 59, 48, 0.4);
+    transform: scale(1.05);
+}
+
+.delete-task-btn:active {
+    transform: scale(0.95);
+}
+
+.add-task-container {
+    display: flex;
+    gap: 10px;
+}
+
+.task-actions-scroll {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 10px;
+    margin-bottom: 15px;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+    padding-bottom: 8px;
+}
+
+.clear-all-btn {
+    padding: 12px 20px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(13, 10, 20, 0.85);
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 14px;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    white-space: nowrap;
+    flex: 0 0 auto;
+    -webkit-tap-highlight-color: transparent;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .clear-all-btn:hover {
+        background: rgba(13, 10, 20, 0.95);
+        border-color: rgba(217, 70, 239, 0.5);
+        color: var(--text);
+    }
+}
+
+.clear-all-btn:active {
+    transform: scale(0.98);
+}
+
+.add-task-input {
+    flex: 1;
+    padding: 16px;
+    border: 1px solid rgba(168, 85, 247, 0.35);
+    outline: none;
+    font-size: 16px;
+    border-radius: 12px;
+    font-family: inherit;
+    background: rgba(13, 10, 20, 0.85);
+
+    color: var(--text);
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.add-task-input:focus {
+    border-color: rgba(168, 85, 247, 0.7);
+    background: rgba(13, 10, 20, 0.95);
+    box-shadow: 0 0 20px rgba(168, 85, 247, 0.3), inset 0 0 20px rgba(168, 85, 247, 0.12);
+}
+
+.add-task-input::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+.add-task-submit {
+    padding: 16px 24px;
+    border: 1px solid rgba(168, 85, 247, 0.45);
+    background: rgba(168, 85, 247, 0.14);
+    color: var(--text);
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 12px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-weight: 600;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .add-task-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(168, 85, 247, 0.25), 0 0 40px rgba(217, 70, 239, 0.18);
+    }
+}
+
+.add-task-submit:active {
+    transform: translateY(0) scale(0.98);
+}
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(10px);
+}
+
+.modal.active {
+    display: flex;
+    animation: fadeIn 0.3s ease;
+}
+
+.modal-content {
+    background-color: rgba(13, 10, 20, 0.95);
+    padding: 32px;
+    border: 1px solid rgba(168, 85, 247, 0.3);
+    max-width: 400px;
+    width: 90%;
+    border-radius: 20px;
+    animation: scaleIn 0.3s ease;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 30px rgba(168, 85, 247, 0.1);
+}
+
+.task-checkbox.checked {
+    background-color: var(--neon-pink);
+    border-color: var(--neon-pink);
+    animation: scaleIn 0.3s ease;
+    box-shadow: 0 0 20px rgba(255, 0, 255, 0.6);
+}
+
+.modal-content h2 {
+    font-size: 22px;
+    font-weight: 400;
+    margin-bottom: 20px;
+    color: #ffffff;
+}
+
+.modal-input {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    outline: none;
+    font-size: 16px;
+    margin-bottom: 24px;
+    border-radius: 12px;
+    font-family: inherit;
+    background: rgba(255, 255, 255, 0.05);
+    color: #ffffff;
+    transition: all 0.3s ease;
+}
+
+.modal-input:focus {
+    border-color: rgba(255, 255, 255, 0.4);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.modal-input::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.modal-btn {
+    padding: 12px 24px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+    font-size: 15px;
+    border-radius: 10px;
+    font-family: inherit;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.modal-btn.cancel {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: #ffffff;
+}
+
+.modal-btn.cancel:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.modal-btn.confirm {
+    background-color: #ffffff;
+    color: #000000;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .modal-btn.confirm:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(255, 255, 255, 0.3);
+    }
+}
+
+.modal-btn:active {
+    transform: scale(0.98);
+}
+
+/* Toast notification */
+.toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: rgba(30, 30, 30, 0.95);
+    color: #ffffff;
+    padding: 16px 24px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 2000;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.1);
+    max-width: 90%;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+.toast-message {
+    flex: 1;
+    font-size: 15px;
+}
+
+.toast-action {
+    background: rgba(100, 200, 255, 0.2);
+    border: 1px solid rgba(100, 200, 255, 0.4);
+    color: #ffffff;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.toast-action:hover {
+    background: rgba(100, 200, 255, 0.3);
+    box-shadow: 0 0 20px rgba(100, 200, 255, 0.4);
+}
+
+.toast-action:active {
+    transform: scale(0.95);
+}
+
+/* Mobile optimizations */
+@media (max-width: 600px) {
+    .container {
+        padding: 30px 20px;
+    }
+
+    :root {
+        --texture-fiber-opacity: 0.14;
+        --texture-fiber-scale: 1.75px;
+        --scroll-size-v: 7px;
+        --scroll-size-h: 7px;
+    }
+
+    .header h1 {
+        font-size: 28px;
+    }
+
+    .project-item {
+        padding: 20px;
+    }
+
+    .add-project-btn {
+        padding: 16px;
+    }
+
+    .project-name {
+        font-size: 24px;
+    }
+
+    .task-actions-scroll {
+        gap: 8px;
+        overflow-x: auto;
+        overflow-y: hidden;
+        white-space: nowrap;
+    }
+
+    .clear-all-btn {
+        padding: 11px 16px;
+    }
+
+    .toast {
+        bottom: 20px;
+        max-width: calc(100% - 40px);
+    }
+}
+
+/* Swipe gestures */
+.task-item {
+    position: relative;
+    user-select: none;
+}
+
+.task-item.swiping {
+    transition: none !important;
+}
+
+.task-item.swipe-left {
+    background: linear-gradient(90deg, transparent, rgba(255, 59, 48, 0.2));
+}
+
+.task-item.swipe-right {
+    background: linear-gradient(90deg, rgba(52, 199, 89, 0.2), transparent);
+}
+
+.swipe-indicator {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 22px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.swipe-indicator.left {
+    left: 20px;
+    color: rgba(52, 199, 89, 0.8);
+}
+
+.swipe-indicator.right {
+    right: 20px;
+    color: rgba(255, 59, 48, 0.8);
+}
+
+.task-item.swipe-left .swipe-indicator.right {
+    opacity: 1;
+}
+
+.task-item.swipe-right .swipe-indicator.left {
+    opacity: 1;
+}
+
+/* Mobile Optimizations for Performance */
+@media (max-width: 768px) {
+
+    /* Reduce glassmorphism blur */
+    .project-item,
+    .add-project-btn,
+    .modal-content,
+    .toast,
+    .add-task-input {
+        backdrop-filter: blur(5px) !important;
+        -webkit-backdrop-filter: blur(5px) !important;
+    }
+}
