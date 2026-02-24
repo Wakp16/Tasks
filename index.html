@@ -114,7 +114,8 @@
             pointerId: null,
             lastX: 0,
             lastY: 0,
-            rafId: null
+            rafId: null,
+            type: null // 'project' or 'task'
         };
 
         // DOM elements
@@ -514,7 +515,7 @@
 
         function renderProjects() {
             projectsList.innerHTML = '';
-            projects.forEach(project => {
+            projects.forEach((project, index) => {
                 const projectItem = document.createElement('div');
                 projectItem.className = 'project-item';
 
@@ -594,7 +595,212 @@
                 };
 
                 projectsList.appendChild(projectItem);
+
+                // Initialize drag for projects
+                initDragSupport(projectItem, index, 'project', projectsList);
             });
+        }
+
+        function initDragSupport(item, index, type, listContainer) {
+            let pressStartX = 0;
+            let pressStartY = 0;
+
+            const clearLongPress = () => {
+                if (dragState.longPressTimer) {
+                    clearTimeout(dragState.longPressTimer);
+                    dragState.longPressTimer = null;
+                }
+                dragState.pending = false;
+            };
+
+            const activateDrag = (event) => {
+                dragState.active = true;
+                dragState.pending = false;
+                dragState.startIndex = index;
+                dragState.currentIndex = index;
+                dragState.dragEl = item;
+                dragState.startY = event.clientY;
+                dragState.pointerId = event.pointerId;
+                dragState.type = type;
+
+                item.classList.add('dragging');
+                listContainer.classList.add('dragging');
+                item.style.pointerEvents = 'none';
+
+                const placeholder = document.createElement('div');
+                placeholder.className = `${item.className.split(' ')[0]} drag-placeholder`;
+                placeholder.style.height = `${item.offsetHeight}px`;
+                dragState.placeholder = placeholder;
+                item.insertAdjacentElement('afterend', placeholder);
+
+                item.setPointerCapture(event.pointerId);
+                document.addEventListener('pointermove', handleDragMove);
+                document.addEventListener('pointerup', handleDragEnd);
+                document.addEventListener('pointercancel', handleDragEnd);
+            };
+
+            const handleDragMove = (event) => {
+                if (!dragState.active || dragState.dragEl !== item || event.pointerId !== dragState.pointerId) {
+                    return;
+                }
+
+                event.preventDefault();
+                dragState.lastX = event.clientX;
+                dragState.lastY = event.clientY;
+                if (dragState.rafId) return;
+
+                dragState.rafId = requestAnimationFrame(() => {
+                    dragState.rafId = null;
+                    const diffY = dragState.lastY - dragState.startY;
+                    item.style.transform = `translateY(${diffY}px) scale(1.02)`;
+
+                    let targetItem = null;
+                    const el = document.elementFromPoint(dragState.lastX, dragState.lastY);
+                    if (el) {
+                        const candidate = el.closest(`.${type}-item`);
+                        if (candidate && candidate !== item && !candidate.classList.contains('drag-placeholder')) {
+                            targetItem = candidate;
+                        }
+                    }
+
+                    if (!targetItem) {
+                        const items = Array.from(listContainer.querySelectorAll(`.${type}-item:not(.dragging):not(.drag-placeholder)`));
+                        if (items.length === 0) return;
+                        let closest = null;
+                        let closestDistance = Infinity;
+                        items.forEach(item => {
+                            const rect = item.getBoundingClientRect();
+                            const midY = rect.top + rect.height / 2;
+                            const distance = Math.abs(dragState.lastY - midY);
+                            if (distance < closestDistance) {
+                                closestDistance = distance;
+                                closest = item;
+                            }
+                        });
+                        targetItem = closest;
+                    }
+
+                    if (!targetItem) return;
+
+                    const rect = targetItem.getBoundingClientRect();
+                    const before = dragState.lastY < rect.top + rect.height / 2;
+                    const placeholder = dragState.placeholder;
+                    if (!placeholder) return;
+
+                    const prev = placeholder.previousElementSibling;
+                    const next = placeholder.nextElementSibling;
+                    if (before && targetItem === next) {
+                        return;
+                    }
+                    if (!before && targetItem === prev) {
+                        return;
+                    }
+
+                    if (before) {
+                        listContainer.insertBefore(placeholder, targetItem);
+                    } else {
+                        listContainer.insertBefore(placeholder, targetItem.nextSibling);
+                    }
+                });
+            };
+
+            const handleDragEnd = (event) => {
+                if (!dragState.active || dragState.dragEl !== item || event.pointerId !== dragState.pointerId) {
+                    clearLongPress();
+                    return;
+                }
+
+                item.releasePointerCapture(event.pointerId);
+                document.removeEventListener('pointermove', handleDragMove);
+                document.removeEventListener('pointerup', handleDragEnd);
+                document.removeEventListener('pointercancel', handleDragEnd);
+                if (dragState.rafId) {
+                    cancelAnimationFrame(dragState.rafId);
+                    dragState.rafId = null;
+                }
+
+                const children = Array.from(listContainer.children);
+                const placeholderIndex = children.indexOf(dragState.placeholder);
+                const dragIndex = children.indexOf(dragState.dragEl);
+                let finalIndex = placeholderIndex;
+                if (placeholderIndex > dragIndex) {
+                    finalIndex -= 1;
+                }
+
+                item.style.transform = '';
+                item.style.pointerEvents = '';
+                item.classList.remove('dragging');
+                listContainer.classList.remove('dragging');
+
+                if (dragState.placeholder) {
+                    dragState.placeholder.remove();
+                }
+
+                const oldIndex = dragState.startIndex;
+                dragState.active = false;
+                dragState.dragEl = null;
+                dragState.placeholder = null;
+                dragState.pointerId = null;
+                dragState.lastX = 0;
+                dragState.lastY = 0;
+                const dragType = dragState.type;
+                dragState.type = null;
+                clearLongPress();
+
+                if (finalIndex !== null && finalIndex >= 0 && finalIndex !== oldIndex) {
+                    if (dragType === 'project') {
+                        moveProject(oldIndex, finalIndex);
+                    } else {
+                        const project = projects.find(p => p.id === currentProjectId);
+                        moveTask(project, oldIndex, finalIndex);
+                    }
+                } else {
+                    if (dragType === 'project') renderProjects();
+                    else renderTasks();
+                }
+            };
+
+            item.addEventListener('pointerdown', (event) => {
+                if (event.button !== 0) return;
+                // For tasks, check inputs/buttons. For projects, we already check in onclick, but here is safer.
+                if (event.target.closest('input, button')) return;
+                if (dragState.active) return;
+
+                pressStartX = event.clientX;
+                pressStartY = event.clientY;
+                dragState.pending = true;
+
+                clearLongPress();
+                dragState.longPressTimer = setTimeout(() => activateDrag(event), 300);
+            });
+
+            item.addEventListener('pointermove', (event) => {
+                if (!dragState.pending || dragState.active) return;
+                const diffX = Math.abs(event.clientX - pressStartX);
+                const diffY = Math.abs(event.clientY - pressStartY);
+                if (diffX > 10 || diffY > 10) {
+                    clearLongPress();
+                }
+            });
+
+            item.addEventListener('pointerup', () => {
+                if (!dragState.active) {
+                    clearLongPress();
+                }
+            });
+
+            item.addEventListener('pointercancel', () => {
+                if (!dragState.active) {
+                    clearLongPress();
+                }
+            });
+        }
+
+        function moveProject(fromIndex, toIndex) {
+            const project = projects.splice(fromIndex, 1)[0];
+            projects.splice(toIndex, 0, project);
+            saveData();
+            renderProjects();
         }
 
         function openProject(projectId) {
@@ -652,188 +858,8 @@
                 taskItem.appendChild(taskText);
                 taskItem.appendChild(deleteBtn);
 
-                // Long-press drag to reorder
-                let pressStartX = 0;
-                let pressStartY = 0;
-
-                const clearLongPress = () => {
-                    if (dragState.longPressTimer) {
-                        clearTimeout(dragState.longPressTimer);
-                        dragState.longPressTimer = null;
-                    }
-                    dragState.pending = false;
-                };
-
-                const activateDrag = (event) => {
-                    dragState.active = true;
-                    dragState.pending = false;
-                    dragState.startIndex = index;
-                    dragState.currentIndex = index;
-                    dragState.dragEl = taskItem;
-                    dragState.startY = event.clientY;
-                    dragState.pointerId = event.pointerId;
-
-                    taskItem.classList.add('dragging');
-                    tasksList.classList.add('dragging');
-                    taskItem.style.pointerEvents = 'none';
-
-                    const placeholder = document.createElement('div');
-                    placeholder.className = 'task-item drag-placeholder';
-                    placeholder.style.height = `${taskItem.offsetHeight}px`;
-                    dragState.placeholder = placeholder;
-                    taskItem.insertAdjacentElement('afterend', placeholder);
-
-                    taskItem.setPointerCapture(event.pointerId);
-                    document.addEventListener('pointermove', handleDragMove);
-                    document.addEventListener('pointerup', handleDragEnd);
-                    document.addEventListener('pointercancel', handleDragEnd);
-                };
-
-                const handleDragMove = (event) => {
-                    if (!dragState.active || dragState.dragEl !== taskItem || event.pointerId !== dragState.pointerId) {
-                        return;
-                    }
-
-                    event.preventDefault();
-                    dragState.lastX = event.clientX;
-                    dragState.lastY = event.clientY;
-                    if (dragState.rafId) return;
-
-                    dragState.rafId = requestAnimationFrame(() => {
-                        dragState.rafId = null;
-                        const diffY = dragState.lastY - dragState.startY;
-                        taskItem.style.transform = `translateY(${diffY}px) scale(1.02)`;
-
-                        let targetItem = null;
-                        const el = document.elementFromPoint(dragState.lastX, dragState.lastY);
-                        if (el) {
-                            const candidate = el.closest('.task-item');
-                            if (candidate && candidate !== taskItem && !candidate.classList.contains('drag-placeholder')) {
-                                targetItem = candidate;
-                            }
-                        }
-
-                        if (!targetItem) {
-                            const items = Array.from(tasksList.querySelectorAll('.task-item:not(.dragging):not(.drag-placeholder)'));
-                            if (items.length === 0) return;
-                            let closest = null;
-                            let closestDistance = Infinity;
-                            items.forEach(item => {
-                                const rect = item.getBoundingClientRect();
-                                const midY = rect.top + rect.height / 2;
-                                const distance = Math.abs(dragState.lastY - midY);
-                                if (distance < closestDistance) {
-                                    closestDistance = distance;
-                                    closest = item;
-                                }
-                            });
-                            targetItem = closest;
-                        }
-
-                        if (!targetItem) return;
-
-                        const rect = targetItem.getBoundingClientRect();
-                        const before = dragState.lastY < rect.top + rect.height / 2;
-                        const placeholder = dragState.placeholder;
-                        if (!placeholder) return;
-
-                        const prev = placeholder.previousElementSibling;
-                        const next = placeholder.nextElementSibling;
-                        if (before && targetItem === next) {
-                            return;
-                        }
-                        if (!before && targetItem === prev) {
-                            return;
-                        }
-
-                        if (before) {
-                            tasksList.insertBefore(placeholder, targetItem);
-                        } else {
-                            tasksList.insertBefore(placeholder, targetItem.nextSibling);
-                        }
-                    });
-                };
-
-                const handleDragEnd = (event) => {
-                    if (!dragState.active || dragState.dragEl !== taskItem || event.pointerId !== dragState.pointerId) {
-                        clearLongPress();
-                        return;
-                    }
-
-                    taskItem.releasePointerCapture(event.pointerId);
-                    document.removeEventListener('pointermove', handleDragMove);
-                    document.removeEventListener('pointerup', handleDragEnd);
-                    document.removeEventListener('pointercancel', handleDragEnd);
-                    if (dragState.rafId) {
-                        cancelAnimationFrame(dragState.rafId);
-                        dragState.rafId = null;
-                    }
-
-                    const children = Array.from(tasksList.children);
-                    const placeholderIndex = children.indexOf(dragState.placeholder);
-                    const dragIndex = children.indexOf(dragState.dragEl);
-                    let finalIndex = placeholderIndex;
-                    if (placeholderIndex > dragIndex) {
-                        finalIndex -= 1;
-                    }
-
-                    taskItem.style.transform = '';
-                    taskItem.style.pointerEvents = '';
-                    taskItem.classList.remove('dragging');
-                    tasksList.classList.remove('dragging');
-
-                    if (dragState.placeholder) {
-                        dragState.placeholder.remove();
-                    }
-
-                    dragState.active = false;
-                    dragState.dragEl = null;
-                    dragState.placeholder = null;
-                    dragState.pointerId = null;
-                    dragState.lastX = 0;
-                    dragState.lastY = 0;
-                    clearLongPress();
-
-                    if (finalIndex !== null && finalIndex >= 0 && finalIndex !== dragState.startIndex) {
-                        moveTask(project, dragState.startIndex, finalIndex);
-                    } else {
-                        renderTasks();
-                    }
-                };
-
-                taskItem.addEventListener('pointerdown', (event) => {
-                    if (event.button !== 0) return;
-                    if (event.target.closest('input, button')) return;
-                    if (dragState.active) return;
-
-                    pressStartX = event.clientX;
-                    pressStartY = event.clientY;
-                    dragState.pending = true;
-
-                    clearLongPress();
-                    dragState.longPressTimer = setTimeout(() => activateDrag(event), 300);
-                });
-
-                taskItem.addEventListener('pointermove', (event) => {
-                    if (!dragState.pending || dragState.active) return;
-                    const diffX = Math.abs(event.clientX - pressStartX);
-                    const diffY = Math.abs(event.clientY - pressStartY);
-                    if (diffX > 10 || diffY > 10) {
-                        clearLongPress();
-                    }
-                });
-
-                taskItem.addEventListener('pointerup', () => {
-                    if (!dragState.active) {
-                        clearLongPress();
-                    }
-                });
-
-                taskItem.addEventListener('pointercancel', () => {
-                    if (!dragState.active) {
-                        clearLongPress();
-                    }
-                });
+                // Initialize drag for tasks
+                initDragSupport(taskItem, index, 'task', tasksList);
 
                 // Add swipe gesture support
                 let startX = 0;
@@ -844,7 +870,7 @@
                 let isVerticalScroll = false;
 
                 taskItem.addEventListener('touchstart', (e) => {
-                    if (dragState.active || dragState.pending) return;
+                    if (dragState.active) return;
                     startX = e.touches[0].clientX;
                     startY = e.touches[0].clientY;
                     isSwiping = false;
@@ -852,7 +878,7 @@
                 });
 
                 taskItem.addEventListener('touchmove', (e) => {
-                    if (dragState.active || dragState.pending) return;
+                    if (dragState.active) return;
                     currentX = e.touches[0].clientX;
                     currentY = e.touches[0].clientY;
                     const diffX = currentX - startX;
